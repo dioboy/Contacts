@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <TextView
+        android:id="@+id/ContactsDetailTitle"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/contacts_title_Height"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:gravity="center"
+        android:text="@string/add_contacts"
+        android:textColor="@android:color/holo_blue_dark"
+        android:textSize="@dimen/contacts_title_font_size"
+        android:textStyle="bold" />
+
+    <RelativeLayout
+        android:id="@+id/ContactsDetailTitleLine"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/contacts_title_line_height"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/ContactsDetailTitle"
+        android:background="@android:color/holo_blue_dark" >
+    </RelativeLayout>
+
+    <ScrollView
+        android:id="@+id/ContactsDetailScroll"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/ContactsDetailTitleLine" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/contacts_default_margine"
+            android:layout_marginRight="@dimen/contacts_default_margine"
+            android:orientation="vertical" >
+
+            <!-- 이름 -->
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/contacts_default_margine"
+                android:text="@string/name"
+                android:textColor="@android:color/holo_blue_dark"
+                android:textSize="@dimen/contacts_subtitle_font_size" />
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/contacts_subtitle_line_height"
+                android:layout_marginTop="@dimen/contacts_default_margine"
+                android:background="@android:color/holo_blue_dark" >
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <ImageView
+                    android:layout_width="@dimen/contacts_detail_item_height"
+                    android:layout_height="@dimen/contacts_detail_item_height"
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/profile" />
+
+                <RelativeLayout
+                    android:layout_width="@dimen/contacts_item_mid_line_width"
+                    android:layout_height="fill_parent"
+                    android:layout_margin="@dimen/contacts_default_margine"
+                    android:background="@color/black" >
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/ContactsDetailName"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/contacts_default_margine"
+                    android:singleLine="true"
+                    android:textSize="@dimen/contacts_list_item_name_fontsize" />
+            </LinearLayout>
+            <!-- 그룹 -->
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/contacts_default_margine"
+                android:text="@string/group"
+                android:textColor="@android:color/holo_blue_dark"
+                android:textSize="@dimen/contacts_subtitle_font_size" />
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/contacts_subtitle_line_height"
+                android:layout_marginTop="@dimen/contacts_default_margine"
+                android:background="@android:color/holo_blue_dark" >
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <ImageView
+                    android:layout_width="@dimen/contacts_detail_item_height"
+                    android:layout_height="@dimen/contacts_detail_item_height"
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/group" />
+
+                <RelativeLayout
+                    android:layout_width="@dimen/contacts_item_mid_line_width"
+                    android:layout_height="fill_parent"
+                    android:layout_margin="@dimen/contacts_default_margine"
+                    android:background="@color/black" >
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/ContactsDetailGroup"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/contacts_default_margine"
+                    android:textSize="@dimen/contacts_list_item_name_fontsize" />
+            </LinearLayout>
+            <!-- 휴대폰 -->
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/contacts_default_margine"
+                android:text="@string/mobile"
+                android:textColor="@android:color/holo_blue_dark"
+                android:textSize="@dimen/contacts_subtitle_font_size" />
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/contacts_subtitle_line_height"
+                android:layout_marginTop="@dimen/contacts_default_margine"
+                android:background="@android:color/holo_blue_dark" >
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <ImageView
+                    android:layout_width="@dimen/contacts_detail_item_height"
+                    android:layout_height="@dimen/contacts_detail_item_height"
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/mobile" />
+
+                <RelativeLayout
+                    android:layout_width="@dimen/contacts_item_mid_line_width"
+                    android:layout_height="fill_parent"
+                    android:layout_margin="@dimen/contacts_default_margine"
+                    android:background="@color/black" >
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/ContactsDetailMobile"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/contacts_default_margine"
+                    android:singleLine="true"
+                    android:textSize="@dimen/contacts_list_item_name_fontsize" />
+            </LinearLayout>
+            <!-- 전화번호 -->
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/contacts_default_margine"
+                android:text="@string/phone"
+                android:textColor="@android:color/holo_blue_dark"
+                android:textSize="@dimen/contacts_subtitle_font_size" />
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/contacts_subtitle_line_height"
+                android:layout_marginTop="@dimen/contacts_default_margine"
+                android:background="@android:color/holo_blue_dark" >
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <ImageView
+                    android:layout_width="@dimen/contacts_detail_item_height"
+                    android:layout_height="@dimen/contacts_detail_item_height"
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/phone" />
+
+                <RelativeLayout
+                    android:layout_width="@dimen/contacts_item_mid_line_width"
+                    android:layout_height="fill_parent"
+                    android:layout_margin="@dimen/contacts_default_margine"
+                    android:background="@color/black" >
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/ContactsDetailPhone"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/contacts_default_margine"
+                    android:singleLine="true"
+                    android:textSize="@dimen/contacts_list_item_name_fontsize" />
+            </LinearLayout>
+            <!-- 이메일 -->
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/contacts_default_margine"
+                android:text="@string/email"
+                android:textColor="@android:color/holo_blue_dark"
+                android:textSize="@dimen/contacts_subtitle_font_size" />
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/contacts_subtitle_line_height"
+                android:layout_marginTop="@dimen/contacts_default_margine"
+                android:background="@android:color/holo_blue_dark" >
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <ImageView
+                    android:layout_width="@dimen/contacts_detail_item_height"
+                    android:layout_height="@dimen/contacts_detail_item_height"
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/email" />
+
+                <RelativeLayout
+                    android:layout_width="@dimen/contacts_item_mid_line_width"
+                    android:layout_height="fill_parent"
+                    android:layout_margin="@dimen/contacts_default_margine"
+                    android:background="@color/black" >
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/ContactsDetailEmail"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/contacts_default_margine"
+                    android:singleLine="true"
+                    android:textSize="@dimen/contacts_list_item_name_fontsize" />
+            </LinearLayout>
+            <!-- 주소 -->
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/contacts_default_margine"
+                android:text="@string/address"
+                android:textColor="@android:color/holo_blue_dark"
+                android:textSize="@dimen/contacts_subtitle_font_size" />
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/contacts_subtitle_line_height"
+                android:layout_marginTop="@dimen/contacts_default_margine"
+                android:background="@android:color/holo_blue_dark" >
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <ImageView
+                    android:layout_width="@dimen/contacts_detail_item_height"
+                    android:layout_height="@dimen/contacts_detail_item_height"
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/address" />
+
+                <RelativeLayout
+                    android:layout_width="@dimen/contacts_item_mid_line_width"
+                    android:layout_height="fill_parent"
+                    android:layout_margin="@dimen/contacts_default_margine"
+                    android:background="@color/black" >
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/ContactsDetailAddress"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/contacts_default_margine"
+                    android:singleLine="true"
+                    android:textSize="@dimen/contacts_list_item_name_fontsize" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>

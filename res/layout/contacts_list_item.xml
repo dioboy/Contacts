@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/contacts_list_item_height"
+    android:orientation="horizontal" >
+
+    <ImageView
+        android:id="@+id/ContactsItemPhoto"
+        android:layout_width="@dimen/contacts_list_item_height"
+        android:layout_height="@dimen/contacts_list_item_height"
+        android:layout_margin="@dimen/contacts_default_margine"
+        android:layout_alignParentLeft="true"
+        android:background="@drawable/profile" />
+
+    <RelativeLayout
+        android:id="@+id/ContactsListItemMid"
+        android:layout_width="wrap_content"
+        android:layout_marginLeft="@dimen/contacts_default_margine"
+        android:layout_height="@dimen/contacts_list_item_height"
+        android:layout_toLeftOf="@+id/ContactsItemMidLine"
+        android:layout_toRightOf="@+id/ContactsItemPhoto" >
+
+        <TextView
+            android:id="@+id/ContactsItemName"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/contacts_list_item_name_height"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:textSize="@dimen/contacts_list_item_name_fontsize" />
+
+        <TextView
+            android:id="@+id/ContactsItemPhone"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/contacts_list_item_phone_height"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/ContactsItemName"
+            android:textSize="@dimen/contacts_list_item_phone_fontsize" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/ContactsItemMidLine"
+        android:layout_width="@dimen/contacts_item_mid_line_width"
+        android:layout_height="fill_parent"
+        android:layout_alignParentRight="true"
+        android:background="@color/black" >
+    </RelativeLayout> 
+</RelativeLayout>

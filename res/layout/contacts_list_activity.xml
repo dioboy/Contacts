@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <EditText
+            android:id="@+id/SearchInput"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/search_size"
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@+id/SearchButton"
+            android:singleLine="true" />
+
+        <ImageButton
+            android:id="@+id/SearchButton"
+            android:layout_width="@dimen/search_size"
+            android:layout_height="@dimen/search_size"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/search"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+    <include layout="@layout/contacts_list_layout" />
+</LinearLayout>

@@ -1,0 +1,28 @@
+<resources>
+
+    <!-- contacts_act -->
+
+
+    <!-- contacts list -->
+    <dimen name="search_size">50dp</dimen>
+
+    <!-- contacts list item -->
+    <dimen name="contacts_list_item_height">60dp</dimen>
+    <dimen name="contacts_list_item_name_height">30dp</dimen>
+    <dimen name="contacts_list_item_phone_height">20dp</dimen>
+    <dimen name="contacts_list_item_name_fontsize">25dp</dimen>
+    <dimen name="contacts_list_item_phone_fontsize">15dp</dimen>
+    <dimen name="contacts_subtitle_font_size">20dp</dimen>
+    <dimen name="contacts_title_font_size">40dp</dimen>
+    <dimen name="contacts_title_Height">50dp</dimen>
+    <dimen name="contacts_title_line_height">3dp</dimen>
+    <dimen name="contacts_subtitle_line_height">1dp</dimen>
+    <dimen name="contacts_detail_item_height">35dp</dimen>
+    <dimen name="contacts_detail_item_font_size">20dp</dimen>
+    <dimen name="contacts_item_mid_line_width">3dp</dimen>
+    <dimen name="contacts_item_mid_line_margine">3dp</dimen>
+    <dimen name="contacts_default_margine">5dp</dimen>
+    <dimen name="groups_item_height">50dp</dimen>
+    <dimen name="add_group_dialog_btn_layout_height">55dp</dimen>
+
+</resources>

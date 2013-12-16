@@ -1,0 +1,87 @@
+package com.hwanee.data;
+
+import android.content.Context;
+
+import com.hwanee.database.ContactsDataBase;
+
+
+public class DefaultContacts {
+	public static String[] mName = new String[] {
+		"홍길동",
+		"고길동",
+		"김철희",
+		"김영희",
+		"김갑수",
+		"대북곤",
+		"박대수",
+		"김엘지",
+		"감대봉",
+		"홍구"
+	};
+	public static String[] mGroup = new String[] {
+		"친구",
+		"친구",
+		"직장",
+		"직장",
+		"직장",
+		"친구",
+		"친구",
+		"친구",
+		"그룹 미지정",
+		"그룹 미지정"
+		};
+	public static String[] mMobile = new String[] {
+		"01034345566",
+		"0118265809",
+		"0165458907",
+		"01023267641",
+		"01045448981",
+		"01023456789",
+		"01010203879",
+		"01087650987",
+		"01008649753",
+		""
+	};
+	public static String[] mPhone = new String[] {
+		"",
+		"021323434",
+		"",
+		"054343949",
+		"051343633",
+		"0263332323",
+		"",
+		"",
+		"",
+		""
+		};
+	public static String[] mEmail = new String[] {
+		"gil@gmail.com",
+		"gogd@gmail.com",
+		"chul@gmail.com",
+		"kyh@naver.com",
+		"kks@hanmail.net",
+		"k1212@gmail.com",
+		"parkds@gmail.com",
+		"klg@naver.com",
+		"dbkang@hanmail.com",
+		"hongu@gmail.com"
+		};
+	public static String[] mAddress= new String[] {
+		"서울시 마포구 합정동 11번지",
+		"서울시 강남구",
+		"경기도 안산시",
+		"경북 포항시",
+		"부산시 해운대구",
+		"서울시 금천구 가산동",
+		"대구광역시 북구",
+		"서울시 금천구 가산동",
+		"경기도 일산시",
+		"인천시"
+		};
+	
+	public static void setDefaultContacts(Context context) {
+		for(int i=0; i<mName.length; i++) {
+			ContactsDataBase.addContacts(context, mName[i], mGroup[i], mMobile[i], mPhone[i], mEmail[i], mAddress[i]);
+		}
+	}
+}

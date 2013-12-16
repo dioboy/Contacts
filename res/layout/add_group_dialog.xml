@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <EditText
+        android:id="@+id/AddGroupInput"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/contacts_default_margine"
+        android:hint="@string/input_group_name"
+        android:textColor="@color/black"
+        android:textSize="@dimen/contacts_subtitle_font_size" />
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/contacts_title_line_height"
+        android:layout_marginLeft="@dimen/contacts_default_margine"
+        android:layout_marginRight="@dimen/contacts_default_margine"
+        android:layout_marginTop="@dimen/contacts_default_margine"
+        android:background="@color/black" >
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/AddGroupSaveBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/add_group_dialog_btn_layout_height"
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@+id/AddGroupDialogBtnMidLine"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:text="@string/save"
+            android:textSize="@dimen/contacts_subtitle_font_size" />
+
+        <RelativeLayout
+            android:id="@+id/AddGroupDialogBtnMidLine"
+            android:layout_width="@dimen/contacts_item_mid_line_width"
+            android:layout_height="@dimen/add_group_dialog_btn_layout_height"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:background="@color/black" >
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/AddGroupCancelBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/add_group_dialog_btn_layout_height"
+            android:layout_alignParentRight="true"
+            android:layout_toRightOf="@+id/AddGroupDialogBtnMidLine"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:text="@string/cancel"
+            android:textSize="@dimen/contacts_subtitle_font_size" />
+    </RelativeLayout>
+
+</LinearLayout>

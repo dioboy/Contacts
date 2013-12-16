@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Contacts</string>
+    <string name="contacts">Contacts</string>
+    <string name="setting">Setting</string>
+    <string name="add_group">New Group</string>
+    <string name="add_contacts">New Contact</string>
+    <string name="name">Name</string>
+    <string name="mobile">Mobile</string>
+    <string name="phone">Phone</string>
+    <string name="group">Group</string>
+    <string name="email">Email</string>
+    <string name="address">Address</string>
+	<string name="ok">OK</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="not_save_contacts">There is no saved contacts</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+    <string name="edit_failed">Failed to edit.</string>
+    <string name="edit_successful">Editing was successful.</string>
+    <string name="delete_failed">Failed to delete.</string>
+    <string name="delete_successful">Deletion was successful.</string>
+    <string name="save_failed">Failed to save.</string>
+    <string name="save_successful">Succeeded in saving.</string>
+	<string name="input_group_name">Enter the name of the group.</string>
+	<string name="delete_dialog_msg">Are you sure you want to delete?</string>
+</resources>

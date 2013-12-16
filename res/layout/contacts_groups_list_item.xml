@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="@dimen/groups_item_height"
+    android:orientation="horizontal" >
+
+    <RelativeLayout
+        android:id="@+id/GroupsListItemLine"
+        android:layout_width="@dimen/contacts_item_mid_line_width"
+        android:layout_height="fill_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_centerVertical="true"
+        android:layout_margin="@dimen/contacts_default_margine"
+        android:background="@color/black" />
+
+    <TextView
+        android:id="@+id/GroupsListItemName"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignParentTop="true"
+        android:layout_centerVertical="true"
+        android:layout_margin="@dimen/contacts_default_margine"
+        android:layout_toLeftOf="@+id/GroupsListItemCount"
+        android:layout_toRightOf="@+id/GroupsListItemLine"
+        android:text="@string/group"
+        android:gravity="center_vertical"
+        android:textSize="@dimen/contacts_subtitle_font_size" />
+
+    <TextView
+        android:id="@+id/GroupsListItemCount"
+        android:layout_width="@dimen/contacts_title_Height"
+        android:layout_height="fill_parent"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_centerVertical="true"
+        android:layout_margin="@dimen/contacts_default_margine"
+        android:background="@color/black"
+        android:gravity="center"
+        android:text="0"
+        android:textColor="@color/white"
+        android:textSize="@dimen/contacts_subtitle_font_size" />
+
+</RelativeLayout>
