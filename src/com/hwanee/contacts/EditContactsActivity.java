@@ -8,12 +8,9 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.KeyEvent;
-import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -57,12 +54,6 @@ public class EditContactsActivity extends Activity {
 		mCancelBtn.setOnClickListener(mClickListener);
 
 		Intent intent = getIntent();
-		Bundle bundle = null;
-		String name = null;
-		String mobile = null;
-		String phone = null;
-		String email = null;
-		String address = null;
 		if (intent != null) {
 			mId = intent.getStringExtra(ContactsInfo.CONTACT_ID_KEY);
 		}

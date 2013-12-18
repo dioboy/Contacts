@@ -1,6 +1,5 @@
 package com.hwanee.database;
 
-import android.R.bool;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;

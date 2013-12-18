@@ -1,26 +1,24 @@
 package com.hwanee.contacts;
 
-import com.hwanee.adapter.GroupsCursorAdapter;
-import com.hwanee.data.ContactsInfo;
-import com.hwanee.database.ContactsDataBase;
-import com.hwanee.database.ContactsDataBaseMetaData;
-
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.DialogInterface.OnClickListener;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.ContextThemeWrapper;
-import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
+
+import com.hwanee.adapter.GroupsCursorAdapter;
+import com.hwanee.data.ContactsInfo;
+import com.hwanee.database.ContactsDataBase;
+import com.hwanee.database.ContactsDataBaseMetaData;
 
 public class ContactsGroupActivity extends Activity {
 	private ListView mGroupsList;

@@ -1,26 +1,17 @@
 package com.hwanee.contacts;
 
-import java.util.ArrayList;
-
-import com.hwanee.data.ContactsInfo;
-import com.hwanee.database.ContactsDataBase;
-import com.hwanee.database.ContactsDataBaseMetaData;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ContextMenu.ContextMenuInfo;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.hwanee.data.ContactsInfo;
+import com.hwanee.database.ContactsDataBase;
+import com.hwanee.database.ContactsDataBaseMetaData;
 
 public class ContactsDetailActivity extends Activity {
 	private String mId = null;

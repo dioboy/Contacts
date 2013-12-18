@@ -1,13 +1,5 @@
 package com.hwanee.data;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import android.content.Context;
-import android.database.Cursor;
-
-import com.hwanee.database.ContactsDataBase;
-import com.hwanee.database.ContactsDataBaseMetaData;
 
 public class ContactsInfo {
 	public static String CONTACT_ID_KEY = "contact_id";
