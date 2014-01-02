@@ -1,8 +1,12 @@
 package com.hwanee.contacts;
 
+import java.util.ArrayList;
+
 import android.app.Dialog;
 import android.app.TabActivity;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.InflateException;
 import android.view.LayoutInflater;
@@ -16,9 +20,10 @@ import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 import android.widget.Toast;
 
-import com.hwanee.data.DefaultContacts;
-import com.hwanee.database.ContactsDataBase;
-import com.hwanee.database.ContactsDataBaseMetaData;
+import com.hwanee.data.DefaultData;
+import com.hwanee.database.Column;
+import com.hwanee.database.DatabaseInfo;
+import com.hwanee.database.DatabaseWrapper;
 
 public class MainActivity extends TabActivity {
 	private static int DIALOG_ADD = 0;
@@ -31,8 +36,8 @@ public class MainActivity extends TabActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		initDatabase();
 		mTabHost = getTabHost();
-		setDefaultContacts();
 		LayoutInflater.from(MainActivity.this).inflate(R.layout.activity_main,
 				mTabHost.getTabContentView(), true);
 
@@ -40,10 +45,6 @@ public class MainActivity extends TabActivity {
 				R.drawable.profile);
 		setTab(ContactsGroupActivity.class, R.string.group, R.drawable.group);
 		setTab(ConfigureActivity.class, R.string.setting, R.drawable.configure);
-
-		if (ContactsDataBase.getGroupsCount(getBaseContext()) == 0) {
-			ContactsDataBase.setDefaultGroups(getBaseContext());
-		}
 	}
 
 	@Override
@@ -114,15 +115,17 @@ public class MainActivity extends TabActivity {
 
 		@Override
 		public void onClick(View v) {
-			int result = -1;
+			boolean result = false;
 			String groupName = null;
 			if (mInputGroupName != null) {
 				groupName = mInputGroupName.getText().toString();
 			}
 
 			if (groupName != null) {
-				result = ContactsDataBase
-						.addGroups(getBaseContext(), groupName, 1);
+				ContentValues values = new ContentValues();
+				values.put(DatabaseInfo.CONTACT_GROUP_KEY, groupName);
+				values.put(DatabaseInfo.CONTACT_DEFAULT_GROUP_KEY, 1);
+				result = DatabaseWrapper.getWrapper().insertData(DatabaseInfo.GROUPS_TABLE, values);
 			}
 			showMsg(result);
 			if (mDialog != null) {
@@ -141,10 +144,40 @@ public class MainActivity extends TabActivity {
 
 		}
 	};
+	ArrayList<Column> mContactsColumn = new ArrayList<Column>();
+	ArrayList<Column> mGroupsColumn = new ArrayList<Column>();
 
-	private void showMsg(int result) {
+	private void initDatabase() {
+		DatabaseWrapper.getWrapper().openOrCreateDB(this,
+				DatabaseInfo.DATABASE_FILE_NAME);
+		Cursor cursor = DatabaseWrapper.getWrapper().getTableList();
+		if (cursor == null || cursor.getCount() == 0) {
+			initColumnArrayList();
+			DatabaseWrapper.getWrapper().creatTable(
+					DatabaseInfo.CONTACTS_TABLE, mContactsColumn);
+			DatabaseWrapper.getWrapper().creatTable(
+					DatabaseInfo.GROUPS_TABLE, mGroupsColumn);
+			DefaultData.setDefaultGroups();
+			DefaultData.setDefaultContacts();
+		}
+	}
+
+	private void initColumnArrayList() {
+		mContactsColumn.add(new Column(DatabaseInfo.CONTACT_ID_KEY, DatabaseInfo.INTEGER_TYPE, true));
+		mContactsColumn.add(new Column(DatabaseInfo.CONTACT_NAME_KEY, DatabaseInfo.TEXT_TYPE, false));
+		mContactsColumn.add(new Column(DatabaseInfo.CONTACT_GROUP_KEY, DatabaseInfo.TEXT_TYPE, false));
+		mContactsColumn.add(new Column(DatabaseInfo.CONTACT_MOBILE_KEY, DatabaseInfo.TEXT_TYPE, false));
+		mContactsColumn.add(new Column(DatabaseInfo.CONTACT_PHONE_KEY, DatabaseInfo.TEXT_TYPE, false));
+		mContactsColumn.add(new Column(DatabaseInfo.CONTACT_EMAIL_KEY, DatabaseInfo.TEXT_TYPE, false));
+		mContactsColumn.add(new Column(DatabaseInfo.CONTACT_ADDRESS_KEY, DatabaseInfo.TEXT_TYPE, false));
+		mGroupsColumn.add(new Column(DatabaseInfo.CONTACT_GROUP_ID_KEY, DatabaseInfo.INTEGER_TYPE, true));
+		mGroupsColumn.add(new Column(DatabaseInfo.CONTACT_GROUP_KEY, DatabaseInfo.TEXT_TYPE, false));
+		mGroupsColumn.add(new Column(DatabaseInfo.CONTACT_DEFAULT_GROUP_KEY, DatabaseInfo.INTEGER_TYPE, false));
+	}
+
+	private void showMsg(boolean result) {
 		int msg = R.string.save_failed;
-		if (result == ContactsDataBaseMetaData.DBStatus_Success) {
+		if (result == true) {
 			msg = R.string.save_successful;
 		}
 		Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
@@ -159,8 +192,9 @@ public class MainActivity extends TabActivity {
 	}
 	
 	private void setDefaultContacts() {
-		if(ContactsDataBase.getContactsCount(this) == 0) {
-			DefaultContacts.setDefaultContacts(this);
+		Cursor cursor = DatabaseWrapper.getWrapper().selectAllData(DatabaseInfo.CONTACTS_TABLE);	
+		if(cursor.getCount() == 0) {
+			DefaultData.setDefaultContacts();
 		}
 	}
 }

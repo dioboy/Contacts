@@ -26,4 +26,5 @@
     <string name="save_successful">Succeeded in saving.</string>
 	<string name="input_group_name">Enter the name of the group.</string>
 	<string name="delete_dialog_msg">Are you sure you want to delete?</string>
+    <string name="empty_name_msg">There is no name entered.</string>
 </resources>

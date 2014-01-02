@@ -1,11 +1,20 @@
 package com.hwanee.data;
 
+import android.content.ContentValues;
 import android.content.Context;
 
-import com.hwanee.database.ContactsDataBase;
+import com.hwanee.database.DatabaseInfo;
+import com.hwanee.database.DatabaseWrapper;
 
 
-public class DefaultContacts {
+public class DefaultData {
+	public static int[] mDefaultGroup = {0, 1, 1, 1};
+	public static String[] mGroupName = new String[]{
+		"미지정",
+		"가족",
+		"친구",
+		"직장",
+		};
 	public static String[] mName = new String[] {
 		"홍길동",
 		"고길동",
@@ -78,10 +87,25 @@ public class DefaultContacts {
 		"경기도 일산시",
 		"인천시"
 		};
+	public static void setDefaultGroups() {
+		for(int i=0; i<mGroupName.length; i++) {
+			ContentValues values = new ContentValues();
+			values.put(DatabaseInfo.CONTACT_GROUP_KEY, mGroupName[i]);
+			values.put(DatabaseInfo.CONTACT_DEFAULT_GROUP_KEY, mDefaultGroup[i]);
+			DatabaseWrapper.getWrapper().insertData(DatabaseInfo.GROUPS_TABLE, values);
+		}
+	}
 	
-	public static void setDefaultContacts(Context context) {
+	public static void setDefaultContacts() {
 		for(int i=0; i<mName.length; i++) {
-			ContactsDataBase.addContacts(context, mName[i], mGroup[i], mMobile[i], mPhone[i], mEmail[i], mAddress[i]);
+			ContentValues values = new ContentValues();
+			values.put(DatabaseInfo.CONTACT_NAME_KEY, mName[i]);
+			values.put(DatabaseInfo.CONTACT_GROUP_KEY, mGroup[i]);
+			values.put(DatabaseInfo.CONTACT_MOBILE_KEY, mMobile[i]);
+			values.put(DatabaseInfo.CONTACT_PHONE_KEY, mPhone[i]);
+			values.put(DatabaseInfo.CONTACT_EMAIL_KEY, mEmail[i]);
+			values.put(DatabaseInfo.CONTACT_ADDRESS_KEY, mAddress[i]);
+			DatabaseWrapper.getWrapper().insertData(DatabaseInfo.CONTACTS_TABLE, values);
 		}
 	}
 }

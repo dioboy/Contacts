@@ -3,6 +3,7 @@ package com.hwanee.contacts;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -17,8 +18,8 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.hwanee.database.ContactsDataBase;
-import com.hwanee.database.ContactsDataBaseMetaData;
+import com.hwanee.database.DatabaseInfo;
+import com.hwanee.database.DatabaseWrapper;
 
 public class AddContactsActivity extends Activity {
 	private EditText mName;
@@ -69,8 +70,7 @@ public class AddContactsActivity extends Activity {
 	}
 
 	private void setGroupsSpinner() {
-		Cursor groupCursor = ContactsDataBase
-				.getGroupsCursor(getBaseContext());
+		Cursor groupCursor = DatabaseWrapper.getWrapper().selectAllData(DatabaseInfo.GROUPS_TABLE);
 		if (groupCursor != null && groupCursor.getCount() != 0) {
 			for (int i = 0; i < groupCursor.getCount(); i++) {
 				if (mGroupList == null) {
@@ -78,7 +78,7 @@ public class AddContactsActivity extends Activity {
 				}
 				mGroupList
 						.add(groupCursor.getString(groupCursor
-								.getColumnIndex(ContactsDataBaseMetaData.DB_COLUMN_GROUPS_NAME)));
+								.getColumnIndex(DatabaseInfo.CONTACT_GROUP_KEY)));
 				if (!groupCursor.moveToNext()) {
 					break;
 				}
@@ -104,15 +104,15 @@ public class AddContactsActivity extends Activity {
 		public void onClick(View v) {
 			int resId = R.string.save_successful;
 			if (v.getId() == R.id.AddContactSave) {
-				String name = mName.getText().toString();
-				String group = mGroup.getSelectedItem().toString();
-				String mobile = mMobile.getText().toString();
-				String phone = mPhone.getText().toString();
-				String email = mEmail.getText().toString();
-				String address = mAddress.getText().toString();
-				int result = ContactsDataBase.addContacts(getApplicationContext(), name,
-						group, mobile, phone, email, address);
-				if(result != ContactsDataBaseMetaData.DBStatus_Success) {
+				ContentValues values = new ContentValues();
+				values.put(DatabaseInfo.CONTACT_NAME_KEY, mName.getText().toString());
+//				values.put(DatabaseInfo.CONTACT_GROUP_KEY, mGroup.getSelectedItem().toString());
+				values.put(DatabaseInfo.CONTACT_MOBILE_KEY, mMobile.getText().toString());
+				values.put(DatabaseInfo.CONTACT_PHONE_KEY, mPhone.getText().toString());
+				values.put(DatabaseInfo.CONTACT_EMAIL_KEY, mEmail.getText().toString());
+				values.put(DatabaseInfo.CONTACT_ADDRESS_KEY, mAddress.getText().toString());
+				boolean result = DatabaseWrapper.getWrapper().insertData(DatabaseInfo.CONTACTS_TABLE, values);
+				if(result == false) {
 					resId = R.string.save_failed;
 				}
 				

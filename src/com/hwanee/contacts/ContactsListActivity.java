@@ -16,9 +16,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import com.hwanee.adapter.CustomCursorAdapter;
-import com.hwanee.data.ContactsInfo;
-import com.hwanee.database.ContactsDataBase;
-import com.hwanee.database.ContactsDataBaseMetaData;
+import com.hwanee.database.DatabaseInfo;
+import com.hwanee.database.DatabaseWrapper;
 
 public class ContactsListActivity extends Activity {
 	private CustomCursorAdapter mCursorAdapter = null;
@@ -35,7 +34,7 @@ public class ContactsListActivity extends Activity {
 
 	@Override
 	protected void onResume() {
-		mCursor = ContactsDataBase.getContactsCursor(this);
+		mCursor = DatabaseWrapper.getWrapper().selectAllData(DatabaseInfo.CONTACTS_TABLE);
 		
 		if (mCursor != null && mCursorAdapter != null) {
 			mCursorAdapter.changeCursor(mCursor);
@@ -54,7 +53,7 @@ public class ContactsListActivity extends Activity {
 	}
 
 	private void initActivity() {
-		mCursor = ContactsDataBase.getContactsCursor(this);
+		mCursor = DatabaseWrapper.getWrapper().selectAllData(DatabaseInfo.CONTACTS_TABLE);
 		mListView = (ListView) findViewById(R.id.ContactsList);
 		mSearchInput = (EditText) findViewById(R.id.SearchInput);
 		mSearchInput.addTextChangedListener(mSearchTextWatcher);
@@ -108,9 +107,9 @@ public class ContactsListActivity extends Activity {
 				Cursor cursor = mCursorAdapter.getCursor();
 				if(cursor != null) {
 					if(cursor.moveToPosition(position)){
-						String id = cursor.getString(cursor.getColumnIndex(ContactsDataBaseMetaData.DB_COLUMN_ID));
-						if(id != null) {
-							intent.putExtra(ContactsInfo.CONTACT_ID_KEY, id);
+						int id = cursor.getInt(cursor.getColumnIndex(DatabaseInfo.CONTACT_ID_KEY));
+						if(id != -1) {
+							intent.putExtra(DatabaseInfo.CONTACT_ID_KEY, id);
 							startActivity(intent);
 						}
 					}

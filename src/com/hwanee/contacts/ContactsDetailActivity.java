@@ -9,12 +9,11 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hwanee.data.ContactsInfo;
-import com.hwanee.database.ContactsDataBase;
-import com.hwanee.database.ContactsDataBaseMetaData;
+import com.hwanee.database.DatabaseInfo;
+import com.hwanee.database.DatabaseWrapper;
 
 public class ContactsDetailActivity extends Activity {
-	private String mId = null;
+	private int mId = -1;
 	private static int[] mItemArray = { R.id.ContactsDetailName,
 			R.id.ContactsDetailGroup, R.id.ContactsDetailMobile,
 			R.id.ContactsDetailPhone, R.id.ContactsDetailEmail,
@@ -37,9 +36,9 @@ public class ContactsDetailActivity extends Activity {
 	private void initDetailActivity() {
 		Intent intent = getIntent();
 		if (intent != null) {
-			mId = intent.getStringExtra(ContactsInfo.CONTACT_ID_KEY);
+			mId = intent.getIntExtra(DatabaseInfo.CONTACT_ID_KEY, -1);
 		}
-		if (mId == null) {
+		if (mId == -1) {
 			finish();
 		}
 		
@@ -55,8 +54,8 @@ public class ContactsDetailActivity extends Activity {
 	@Override
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
 		if (item.getItemId() == R.id.menu_item_delete) {
-			if(mId != null) {
-				boolean result = ContactsDataBase.deleteContacts(this, mId);
+			if(mId != -1) {
+				boolean result = DatabaseWrapper.getWrapper().deleteData(DatabaseInfo.CONTACTS_TABLE, DatabaseInfo.CONTACT_ID_KEY, String.valueOf(mId));
 				showMsg(result);
 				if(result) {
 					finish();
@@ -65,18 +64,20 @@ public class ContactsDetailActivity extends Activity {
 		} else {
 			Intent intent = new Intent(getApplicationContext(),
 					EditContactsActivity.class);
-			intent.putExtra(ContactsInfo.CONTACT_ID_KEY, mId);
+			intent.putExtra(DatabaseInfo.CONTACT_ID_KEY, mId);
 			startActivity(intent);
 		}
 		return true;
 	}
 	
 	public void setContact() {
-		if (mId != null) {
-			Cursor cursor = ContactsDataBase.getSearchById(this, mId);
+		if (mId != -1) {
+			String[] selection = {DatabaseInfo.CONTACT_GROUP_ID_KEY};
+			String[] selectionArgs = {String.valueOf(mId)};
+			Cursor cursor = DatabaseWrapper.getWrapper().selectData(DatabaseInfo.CONTACTS_TABLE, DatabaseInfo.CONTACT_COLUMN_LIST, selection, selectionArgs, null, null, null);
 
 			for (int i = 0; i < mItemArray.length; i++) {
-				getData(ContactsDataBaseMetaData.PROJECTION_CONTACTS[i + 1],
+				getData(DatabaseInfo.CONTACT_COLUMN_LIST[i + 1],
 						mItemArray[i], cursor);
 			}
 			if (cursor != null) {
