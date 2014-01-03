@@ -20,18 +20,20 @@ import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 import android.widget.Toast;
 
+import com.hwanee.data.ContactsData;
 import com.hwanee.data.DefaultData;
 import com.hwanee.database.Column;
 import com.hwanee.database.DatabaseInfo;
 import com.hwanee.database.DatabaseWrapper;
 
 public class MainActivity extends TabActivity {
-	private static int DIALOG_ADD = 0;
 	private Dialog mDialog = null;
 	TabHost mTabHost = null;
 	private Button mSaveBtn = null;
 	private Button mCancelBtn = null;
 	private EditText mInputGroupName = null;
+	private ArrayList<Column> mContactsColumn = new ArrayList<Column>();
+	private ArrayList<Column> mGroupsColumn = new ArrayList<Column>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -70,17 +72,9 @@ public class MainActivity extends TabActivity {
 					AddContactsActivity.class);
 			startActivity(intent);
 		} else if (item.getItemId() == R.id.menu_item_add_group) {
-			showDialog(DIALOG_ADD);
+			createAddDialog();
 		}
 		return super.onMenuItemSelected(featureId, item);
-	}
-
-	@Override
-	protected Dialog onCreateDialog(int id) {
-		if (id == DIALOG_ADD) {
-			return createAddDialog();
-		}
-		return super.onCreateDialog(id);
 	}
 
 	private Dialog createAddDialog() {
@@ -115,7 +109,7 @@ public class MainActivity extends TabActivity {
 
 		@Override
 		public void onClick(View v) {
-			boolean result = false;
+			int result = DatabaseInfo.FAILURE;
 			String groupName = null;
 			if (mInputGroupName != null) {
 				groupName = mInputGroupName.getText().toString();
@@ -123,9 +117,10 @@ public class MainActivity extends TabActivity {
 
 			if (groupName != null) {
 				ContentValues values = new ContentValues();
-				values.put(DatabaseInfo.CONTACT_GROUP_KEY, groupName);
-				values.put(DatabaseInfo.CONTACT_DEFAULT_GROUP_KEY, 1);
-				result = DatabaseWrapper.getWrapper().insertData(DatabaseInfo.GROUPS_TABLE, values);
+				values.put(ContactsData.CONTACT_GROUP_KEY, groupName);
+				values.put(ContactsData.CONTACT_DEFAULT_GROUP_KEY, 1);
+				result = DatabaseWrapper.getWrapper().insertData(
+						ContactsData.GROUPS_TABLE, values);
 			}
 			showMsg(result);
 			if (mDialog != null) {
@@ -144,40 +139,54 @@ public class MainActivity extends TabActivity {
 
 		}
 	};
-	ArrayList<Column> mContactsColumn = new ArrayList<Column>();
-	ArrayList<Column> mGroupsColumn = new ArrayList<Column>();
 
 	private void initDatabase() {
-		DatabaseWrapper.getWrapper().openOrCreateDB(this,
-				DatabaseInfo.DATABASE_FILE_NAME);
-		Cursor cursor = DatabaseWrapper.getWrapper().getTableList();
-		if (cursor == null || cursor.getCount() == 0) {
-			initColumnArrayList();
-			DatabaseWrapper.getWrapper().creatTable(
-					DatabaseInfo.CONTACTS_TABLE, mContactsColumn);
-			DatabaseWrapper.getWrapper().creatTable(
-					DatabaseInfo.GROUPS_TABLE, mGroupsColumn);
-			DefaultData.setDefaultGroups();
-			DefaultData.setDefaultContacts();
+		int result = DatabaseWrapper.getWrapper().openOrCreateDB(this,
+				ContactsData.DATABASE_FILE_NAME);
+		if (result == DatabaseInfo.SUCCESS) {
+			Cursor cursor = DatabaseWrapper.getWrapper().getTableList();
+			if (cursor == null || cursor.getCount() > 2) {
+				initColumnArrayList();
+				DatabaseWrapper.getWrapper().creatTable(
+						ContactsData.CONTACTS_TABLE, mContactsColumn);
+				DatabaseWrapper.getWrapper().creatTable(
+						ContactsData.GROUPS_TABLE, mGroupsColumn);
+				DefaultData.setDefaultGroups();
+				DefaultData.setDefaultContacts();
+			}
+
+			if (cursor != null) {
+				cursor.close();
+			}
 		}
 	}
 
 	private void initColumnArrayList() {
-		mContactsColumn.add(new Column(DatabaseInfo.CONTACT_ID_KEY, DatabaseInfo.INTEGER_TYPE, true));
-		mContactsColumn.add(new Column(DatabaseInfo.CONTACT_NAME_KEY, DatabaseInfo.TEXT_TYPE, false));
-		mContactsColumn.add(new Column(DatabaseInfo.CONTACT_GROUP_KEY, DatabaseInfo.TEXT_TYPE, false));
-		mContactsColumn.add(new Column(DatabaseInfo.CONTACT_MOBILE_KEY, DatabaseInfo.TEXT_TYPE, false));
-		mContactsColumn.add(new Column(DatabaseInfo.CONTACT_PHONE_KEY, DatabaseInfo.TEXT_TYPE, false));
-		mContactsColumn.add(new Column(DatabaseInfo.CONTACT_EMAIL_KEY, DatabaseInfo.TEXT_TYPE, false));
-		mContactsColumn.add(new Column(DatabaseInfo.CONTACT_ADDRESS_KEY, DatabaseInfo.TEXT_TYPE, false));
-		mGroupsColumn.add(new Column(DatabaseInfo.CONTACT_GROUP_ID_KEY, DatabaseInfo.INTEGER_TYPE, true));
-		mGroupsColumn.add(new Column(DatabaseInfo.CONTACT_GROUP_KEY, DatabaseInfo.TEXT_TYPE, false));
-		mGroupsColumn.add(new Column(DatabaseInfo.CONTACT_DEFAULT_GROUP_KEY, DatabaseInfo.INTEGER_TYPE, false));
+		mContactsColumn.add(new Column(ContactsData.CONTACT_ID_KEY,
+				DatabaseInfo.INTEGER_TYPE, true));
+		mContactsColumn.add(new Column(ContactsData.CONTACT_NAME_KEY,
+				DatabaseInfo.TEXT_TYPE, false));
+		mContactsColumn.add(new Column(ContactsData.CONTACT_GROUP_KEY,
+				DatabaseInfo.TEXT_TYPE, false));
+		mContactsColumn.add(new Column(ContactsData.CONTACT_MOBILE_KEY,
+				DatabaseInfo.TEXT_TYPE, false));
+		mContactsColumn.add(new Column(ContactsData.CONTACT_PHONE_KEY,
+				DatabaseInfo.TEXT_TYPE, false));
+		mContactsColumn.add(new Column(ContactsData.CONTACT_EMAIL_KEY,
+				DatabaseInfo.TEXT_TYPE, false));
+		mContactsColumn.add(new Column(ContactsData.CONTACT_ADDRESS_KEY,
+				DatabaseInfo.TEXT_TYPE, false));
+		mGroupsColumn.add(new Column(ContactsData.CONTACT_GROUP_ID_KEY,
+				DatabaseInfo.INTEGER_TYPE, true));
+		mGroupsColumn.add(new Column(ContactsData.CONTACT_GROUP_KEY,
+				DatabaseInfo.TEXT_TYPE, false));
+		mGroupsColumn.add(new Column(ContactsData.CONTACT_DEFAULT_GROUP_KEY,
+				DatabaseInfo.INTEGER_TYPE, false));
 	}
 
-	private void showMsg(boolean result) {
+	private void showMsg(int result) {
 		int msg = R.string.save_failed;
-		if (result == true) {
+		if (result == DatabaseInfo.SUCCESS) {
 			msg = R.string.save_successful;
 		}
 		Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
@@ -189,12 +198,5 @@ public class MainActivity extends TabActivity {
 			mDialog.dismiss();
 		}
 		super.onDestroy();
-	}
-	
-	private void setDefaultContacts() {
-		Cursor cursor = DatabaseWrapper.getWrapper().selectAllData(DatabaseInfo.CONTACTS_TABLE);	
-		if(cursor.getCount() == 0) {
-			DefaultData.setDefaultContacts();
-		}
 	}
 }

@@ -13,17 +13,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 
 public class DatabaseWrapper {
-
-	private static DatabaseWrapper mWrapper;
-
-	private static final String NAME_KEY = "name";
-	private static final String TYPE_KEY = "type";
-	private static final String PK_KEY = "pk";
-	private static final String NOT_NULL_KEY = "notnull";
 	private static final String TABLE_NAME_PLACE = "###NAME###";
 	private static final String TYPE_PLACE = "###TYPE###";
 	private static final String COLUMNS_PLACE = "###COLUMNS###";
-	private static final String VALUES_PLACE = "###VALUES###";
 	private static final String SELECT_ALL_TABLE = "SELECT name FROM sqlite_master WHERE type = 'table' AND name != 'android_metadata' AND name !='sqlite_sequence'";
 	private static final String PRAGMA = "PRAGMA table_info("
 			+ TABLE_NAME_PLACE + ")";
@@ -37,13 +29,12 @@ public class DatabaseWrapper {
 			+ TABLE_NAME_PLACE + " RENAME TO ";
 	private static final String SELECT_ALL_SQL = "SELECT * FROM "
 			+ TABLE_NAME_PLACE;
-	private static final String INSERT_INTO_TABLE = "insert into "
-			+ TABLE_NAME_PLACE + " (" + COLUMNS_PLACE + ") values ("
-			+ VALUES_PLACE + ")";
 	private static final String INSERT_INTO_TABLE_OLD = "INSERT INTO "
 			+ TABLE_NAME_PLACE + "(" + COLUMNS_PLACE + ") SELECT "
 			+ COLUMNS_PLACE + " FROM " + TABLE_NAME_PLACE + "_old";
 	private SQLiteDatabase mDB;
+
+	private static DatabaseWrapper mWrapper;
 
 	public static DatabaseWrapper getWrapper() {
 		if (mWrapper == null) {
@@ -56,43 +47,53 @@ public class DatabaseWrapper {
 
 	}
 
-	public boolean openOrCreateDB(Context context, String name) {
+	public int openOrCreateDB(Context context, String name) {
+		if (name == null) {
+			return DatabaseInfo.DATABASE_FILE_NAME_ERROR;
+		}
 		try {
 			mDB = context.openOrCreateDatabase(name,
-					context.MODE_WORLD_WRITEABLE, null);
+					Context.MODE_WORLD_WRITEABLE, null);
 		} catch (SQLException e) {
-			return false;
+			return DatabaseInfo.SQLEXCEPTION;
 		}
 		if (mDB == null) {
-			return false;
+			return DatabaseInfo.FAILURE;
 		}
-		return false;
+		return DatabaseInfo.SUCCESS;
 	}
 
-	public boolean deleteDB(Context context, String dbName) {
+	public int deleteDB(Context context, String dbName) {
 		String path = DatabaseUtil.getDBPath(context) + dbName;
 		if (path != null) {
 			File file = new File(path);
 			if (file != null || file.exists()) {
 				try {
-					return SQLiteDatabase.deleteDatabase(file);
+					if (SQLiteDatabase.deleteDatabase(file)) {
+						return DatabaseInfo.SUCCESS;
+					}
 				} catch (SQLException e) {
+					return DatabaseInfo.SQLEXCEPTION;
 				}
 			}
 		}
-		return false;
+		return DatabaseInfo.FAILURE;
 	}
 
-	public boolean creatTable(String table, ArrayList<Column> values)
-			throws SQLException {
+	public int creatTable(String tableName, ArrayList<Column> values){
 		if (mDB == null) {
-			return false;
+			return DatabaseInfo.DATABASE_NOT_OPEN;
 		}
-
-		if (existsTable(table)) {
-			return false;
+		
+		if(tableName == null) {
+			return DatabaseInfo.TABLE_NAME_ERROR;
 		}
-		String sql = CREATE_TABLE.replace(TABLE_NAME_PLACE, table);
+		
+		if(values == null || values.size() == 0) {
+			return DatabaseInfo.VALUES_ERROR;
+		}
+		StringBuilder sql = new StringBuilder();
+		sql.append(CREATE_TABLE.replace(TABLE_NAME_PLACE, tableName));
 		ArrayList<String> column = new ArrayList<String>();
 		for (int i = 0; i < values.size(); i++) {
 			String tmp = values.get(i).getSQL();
@@ -100,13 +101,14 @@ public class DatabaseWrapper {
 				column.add(tmp);
 			}
 		}
-		sql += TextUtils.join(", ", column) + ");";
+		sql.append(TextUtils.join(", ", column));
+		sql.append(");");
 		try {
-			mDB.execSQL(sql);
+			mDB.execSQL(sql.toString());
 		} catch (SQLException e) {
-			return false;
+			return DatabaseInfo.SQLEXCEPTION;
 		}
-		return true;
+		return DatabaseInfo.SUCCESS;
 	}
 
 	public boolean existsTable(String table) {
@@ -185,13 +187,13 @@ public class DatabaseWrapper {
 
 		do {
 			String column_name = cursor.getString(cursor
-					.getColumnIndex(NAME_KEY));
+					.getColumnIndex(DatabaseInfo.NAME_KEY));
 			String column_type = cursor.getString(cursor
-					.getColumnIndex(TYPE_KEY));
+					.getColumnIndex(DatabaseInfo.TYPE_KEY));
 			boolean column_pk = DatabaseUtil.converIntToBoolean(cursor
-					.getInt(cursor.getColumnIndex(PK_KEY)));
+					.getInt(cursor.getColumnIndex(DatabaseInfo.PK_KEY)));
 			boolean column_notnull = DatabaseUtil.converIntToBoolean(cursor
-					.getInt(cursor.getColumnIndex(NOT_NULL_KEY)));
+					.getInt(cursor.getColumnIndex(DatabaseInfo.NOT_NULL_KEY)));
 			list.add(new Column(column_name, column_type, column_pk,
 					column_notnull));
 		} while (cursor.moveToNext());
@@ -215,28 +217,35 @@ public class DatabaseWrapper {
 			return null;
 		}
 		while (cursor.moveToNext()) {
-			columns.add(cursor.getString(cursor.getColumnIndex(NAME_KEY)));
+			columns.add(cursor.getString(cursor.getColumnIndex(DatabaseInfo.NAME_KEY)));
 		}
 		cursor.close();
 
 		return columns;
 	}
 
-	public boolean deleteTable(String tableName) {
+	public int deleteTable(String tableName) {
 		if (mDB == null) {
-			return false;
+			return DatabaseInfo.DATABASE_NOT_OPEN;
 		}
 		try {
 			mDB.execSQL(DROP_TABLE + tableName);
 		} catch (SQLException e) {
-			return false;
+			return DatabaseInfo.SQLEXCEPTION;
 		}
-		return true;
+		return DatabaseInfo.SUCCESS;
 	}
 
-	public boolean addColumn(String tableName, String name, String type) {
-		if (mDB == null || tableName == null || name == null && type == null) {
-			return false;
+	public int addColumn(String tableName, String name, String type) {
+		if (mDB == null){
+			return DatabaseInfo.DATABASE_NOT_OPEN;
+		}
+			
+		if(tableName == null){
+			return DatabaseInfo.TABLE_NAME_ERROR;			
+		}
+		if(name == null && type == null) {
+			return DatabaseInfo.VALUES_ERROR;
 		}
 		String sql = ALTER_TABLE_ADD_COLUMN
 				.replace(TABLE_NAME_PLACE, tableName);
@@ -245,12 +254,23 @@ public class DatabaseWrapper {
 		try {
 			mDB.execSQL(sql);
 		} catch (SQLException e) {
-			return false;
+			return DatabaseInfo.SQLEXCEPTION;
 		}
-		return true;
+		return DatabaseInfo.SUCCESS;
 	}
 
-	public boolean deleteColumn(String tableName, String[] colsToRmove) {
+	public int deleteColumn(String tableName, String[] colsToRmove) {
+		if (mDB == null) {
+			return DatabaseInfo.DATABASE_NOT_OPEN;
+		}
+		if (tableName == null) {
+			return DatabaseInfo.TABLE_NAME_ERROR;
+		}
+		if (colsToRmove == null || colsToRmove.length == 0) {
+			return DatabaseInfo.VALUES_ERROR;
+		}
+
+		int result = DatabaseInfo.SUCCESS;
 		ArrayList<String> updatedTableColumns = getTableColumnsName(tableName);
 		ArrayList<String> updatedValues = new ArrayList<String>();
 		ArrayList<Column> oldTableColumns = getColumnType(tableName);
@@ -260,7 +280,7 @@ public class DatabaseWrapper {
 			mDB.execSQL(ALTER_TABLE_RENAME.replace(TABLE_NAME_PLACE, tableName)
 					+ tableName + "_old;");
 		} catch (SQLException e) {
-			return false;
+			result = DatabaseInfo.SQLEXCEPTION;
 		}
 		for (int i = 0; i < updatedTableColumns.size(); i++) {
 			for (int j = 0; j < oldTableColumns.size(); j++) {
@@ -271,12 +291,14 @@ public class DatabaseWrapper {
 			}
 		}
 
-		String createTable = CREATE_TABLE + TextUtils.join(", ", updatedValues)
-				+ ")";
+		StringBuilder createTable = new StringBuilder();
+		createTable.append(CREATE_TABLE.replace(TABLE_NAME_PLACE, tableName));
+		createTable.append(TextUtils.join(", ", updatedValues));
+		createTable.append(")");
 		try {
-			mDB.execSQL(createTable);
+			mDB.execSQL(createTable.toString());
 		} catch (SQLException e) {
-			return false;
+			result = DatabaseInfo.SQLEXCEPTION;
 		}
 		String insertSQL = INSERT_INTO_TABLE_OLD.replace(TABLE_NAME_PLACE,
 				tableName);
@@ -286,86 +308,147 @@ public class DatabaseWrapper {
 		try {
 			mDB.execSQL(insertSQL);
 			mDB.setTransactionSuccessful();
+		} catch (SQLException e) {
+			result = DatabaseInfo.SQLEXCEPTION;
 		} catch (IllegalStateException e) {
-			return false;
+			result = DatabaseInfo.ILLEGAL_STATE_EXCEPTION;
 		} finally {
 			mDB.endTransaction();
 		}
-		try {
-			mDB.execSQL(DROP_TABLE.replace(TABLE_NAME_PLACE, tableName)
-					+ "_old;");
-		} catch (SQLException e) {
-			return false;
+		if (result == DatabaseInfo.SUCCESS) {
+			try {
+				mDB.execSQL(DROP_TABLE.replace(TABLE_NAME_PLACE, tableName)
+						+ "_old;");
+			} catch (SQLException e) {
+				result = DatabaseInfo.SQLEXCEPTION;
+			}
 		}
-		return true;
+		return result;
 	}
 
-	public boolean insertData(String tableName, ContentValues values) {
-		long result = -1;
+	public int insertData(String tableName, ContentValues values) {
+		int result = DatabaseInfo.SUCCESS;
 		if (mDB == null) {
-			return false;
+			return DatabaseInfo.DATABASE_NOT_OPEN;
+		}
+		if (tableName == null) {
+			return DatabaseInfo.TABLE_NAME_ERROR;
+		}
+		if (values == null) {
+			return DatabaseInfo.VALUES_ERROR;
 		}
 		try {
-			mDB.beginTransaction();
-			result = mDB.insert(tableName, null, values);
-			mDB.setTransactionSuccessful();
-
+			if (mDB.insertOrThrow(tableName, null, values) == -1) {
+				result = DatabaseInfo.FAILURE;
+			}
 		} catch (SQLException e) {
-			return false;
+			result = DatabaseInfo.SQLEXCEPTION;
 		} catch (IllegalStateException e) {
-			return false;
-		} finally {
-			mDB.endTransaction();
-		}
-		if (result == -1) {
-			return false;
+			result = DatabaseInfo.ILLEGAL_STATE_EXCEPTION;
 		}
 
-		return true;
+		return result;
+	}
+	
+	/*
+	 * 다수의 데이터 저장용이며 해당 함수는 내부적으로 Transaction이 구현되어 잇지 않으므로 
+	 * 호출 전에 beginTransaction을 해주고 끝나면 setTransactionSuccessful과 endTransaction을 호출할것 
+	 */
+	public int insertData(String tableName, ContentValues[] values) {
+		if (mDB == null) {
+			return DatabaseInfo.DATABASE_NOT_OPEN;
+		}
+		if (tableName == null) {
+			return DatabaseInfo.TABLE_NAME_ERROR;
+		}
+		if (values == null) {
+			return DatabaseInfo.VALUES_ERROR;
+		}
+		try {
+			for (int i = 0; i < values.length; i++) {
+				if (mDB.insert(tableName, null, values[i]) == -1) {
+					return DatabaseInfo.FAILURE;
+				}
+			}
+		} catch (SQLException e) {
+			return DatabaseInfo.SQLEXCEPTION;
+		} catch (IllegalStateException e) {
+			return DatabaseInfo.ILLEGAL_STATE_EXCEPTION;
+		}
+
+		return DatabaseInfo.SUCCESS;
 	}
 
-	public boolean updataData(String tableName, String[] column,
+	public int updataData(String tableName, String[] column,
 			String[] columData, ContentValues values) {
 		if (mDB == null) {
-			return false;
+			return DatabaseInfo.DATABASE_NOT_OPEN;
+		}
+		if (tableName == null) {
+			return DatabaseInfo.TABLE_NAME_ERROR;
+		}
+		if (columData == null || columData == null || values == null) {
+			return DatabaseInfo.VALUES_ERROR;
 		}
 
 		String where = convertArrayToWhereClause(column, columData);
 		if (where == null) {
-			return false;
+			return DatabaseInfo.FAILURE;
 		}
 		try {
-			return mDB.update(tableName, values, where, null) > 0;
+			if (mDB.update(tableName, values, where, null) <= 0) {
+				return DatabaseInfo.FAILURE;
+			}
 		} catch (SQLException e) {
-			return false;
+			return DatabaseInfo.SQLEXCEPTION;
 		}
+
+		return DatabaseInfo.SUCCESS;
 	}
 
-	public boolean deleteData(String tableName, String column, String columData) {
+	public int deleteData(String tableName, String column, String columData) {
 		if (mDB == null) {
-			return false;
+			return DatabaseInfo.DATABASE_NOT_OPEN;
+		}
+		if (tableName == null) {
+			return DatabaseInfo.TABLE_NAME_ERROR;
+		}
+		if (column == null || columData == null) {
+			return DatabaseInfo.VALUES_ERROR;
 		}
 		try {
-			return mDB.delete(tableName, column + "=" + columData, null) > 0;
+			if (mDB.delete(tableName, column + "=" + columData, null) <= 0) {
+				return DatabaseInfo.FAILURE;
+			}
 		} catch (SQLException e) {
-			return false;
+			return DatabaseInfo.SQLEXCEPTION;
 		}
+		return DatabaseInfo.SUCCESS;
 	}
 
-	public boolean deleteData(String tableName, String[] column,
-			String[] columData) throws SQLException {
+	public int deleteData(String tableName, String[] column, String[] columData) {
 		if (mDB == null) {
-			return false;
+			return DatabaseInfo.DATABASE_NOT_OPEN;
+		}
+		if (tableName == null) {
+			return DatabaseInfo.TABLE_NAME_ERROR;
+		}
+		if (columData == null || columData == null) {
+			return DatabaseInfo.VALUES_ERROR;
 		}
 		String where = convertArrayToWhereClause(column, columData);
 		if (where == null) {
-			return false;
+			return DatabaseInfo.FAILURE;
 		}
 		try {
-			return mDB.delete(tableName, where, null) > 0;
+			if (mDB.delete(tableName, where, null) <= 0) {
+				return DatabaseInfo.FAILURE;
+			}
 		} catch (SQLException e) {
-			return false;
+			return DatabaseInfo.SQLEXCEPTION;
 		}
+
+		return DatabaseInfo.SUCCESS;
 	}
 
 	public Cursor selectData(String tableName, String[] columns,
@@ -417,12 +500,12 @@ public class DatabaseWrapper {
 		return cursor;
 	}
 
-	public String convertArrayToWhereClause(String[] column, String[] values) {
+	private String convertArrayToWhereClause(String[] column, String[] values) {
 		if (column == null || column.length == 0 || values == null
 				|| values.length == 0) {
 			return null;
 		}
-		String whereClause = "";
+		StringBuilder whereClause = new StringBuilder();
 		int count = column.length;
 		;
 
@@ -431,35 +514,40 @@ public class DatabaseWrapper {
 		}
 
 		for (int i = 0; i < count; i++) {
-			whereClause += column[i] + "=" + values[i];
+			whereClause.append(column[i]);
+			whereClause.append("=");
+			whereClause.append(values[i]);
 			if (i < count - 1) {
-				whereClause += " AND ";
+				whereClause.append(" AND ");
 			}
 		}
 
-		return whereClause;
+		return whereClause.toString();
 	}
 
-	public String convertArrayToSelectionStr(String[] selection) {
+	private String convertArrayToSelectionStr(String[] selection) {
 		if (selection == null || selection.length == 0) {
 			return null;
 		}
-		String whereClause = "";
+		StringBuilder whereClause = new StringBuilder();
 		int count = selection.length;
-		;
 
 		for (int i = 0; i < count; i++) {
-			whereClause += selection[i] + "= ?";
+			whereClause.append(selection[i]);
+			whereClause.append("= ?");
 			if (i < count - 1) {
-				whereClause += " AND ";
+				whereClause.append(" AND ");
 			}
 		}
 
-		return whereClause;
+		return whereClause.toString();
 	}
 
 	public int getTableItemCount(String tableName) {
 		Cursor cursor = null;
+		if (mDB == null || tableName == null) {
+			return -1;
+		}
 		try {
 			cursor = mDB.rawQuery(
 					SELECT_ALL_SQL.replace(TABLE_NAME_PLACE, tableName), null);
@@ -476,5 +564,30 @@ public class DatabaseWrapper {
 		}
 
 		return cursor.getCount();
+	}
+
+	public int beginTransaction() {
+		if (mDB == null) {
+			return DatabaseInfo.DATABASE_NOT_OPEN;
+		}
+		mDB.beginTransaction();
+		return DatabaseInfo.SUCCESS;
+	}
+
+	public int setTransactionSuccessful() {
+		if (mDB == null) {
+			return DatabaseInfo.DATABASE_NOT_OPEN;
+		}
+		mDB.setTransactionSuccessful();
+		return DatabaseInfo.SUCCESS;
+	}
+
+	public int endTransaction() {
+		if (mDB == null) {
+			return DatabaseInfo.DATABASE_NOT_OPEN;
+		}
+		mDB.endTransaction();
+
+		return DatabaseInfo.SUCCESS;
 	}
 }

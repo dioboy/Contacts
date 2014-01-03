@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.hwanee.contacts.R;
-import com.hwanee.database.DatabaseInfo;
+import com.hwanee.data.ContactsData;
 
 public class CustomCursorAdapter extends CursorAdapter {
 
@@ -23,17 +23,17 @@ public class CustomCursorAdapter extends CursorAdapter {
 		TextView phoneTv = (TextView) view.findViewById(R.id.ContactsItemPhone);
 
 		String name = cursor.getString(cursor
-				.getColumnIndex(DatabaseInfo.CONTACT_NAME_KEY));
+				.getColumnIndex(ContactsData.CONTACT_NAME_KEY));
 		if (nameTv != null && name != null) {
 			nameTv.setText(name);
 		}
 
 		String number = cursor.getString(cursor
-				.getColumnIndex(DatabaseInfo.CONTACT_MOBILE_KEY));
+				.getColumnIndex(ContactsData.CONTACT_MOBILE_KEY));
 		if (phoneTv != null) {
 			if (number == null) {
 				number = cursor.getString(cursor
-						.getColumnIndex(DatabaseInfo.CONTACT_PHONE_KEY));
+						.getColumnIndex(ContactsData.CONTACT_PHONE_KEY));
 			}
 
 			if (number != null) {

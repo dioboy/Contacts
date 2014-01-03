@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hwanee.data.ContactsData;
 import com.hwanee.database.DatabaseInfo;
 import com.hwanee.database.DatabaseWrapper;
 
@@ -36,7 +37,7 @@ public class ContactsDetailActivity extends Activity {
 	private void initDetailActivity() {
 		Intent intent = getIntent();
 		if (intent != null) {
-			mId = intent.getIntExtra(DatabaseInfo.CONTACT_ID_KEY, -1);
+			mId = intent.getIntExtra(ContactsData.CONTACT_ID_KEY, -1);
 		}
 		if (mId == -1) {
 			finish();
@@ -55,16 +56,16 @@ public class ContactsDetailActivity extends Activity {
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
 		if (item.getItemId() == R.id.menu_item_delete) {
 			if(mId != -1) {
-				boolean result = DatabaseWrapper.getWrapper().deleteData(DatabaseInfo.CONTACTS_TABLE, DatabaseInfo.CONTACT_ID_KEY, String.valueOf(mId));
+				int result = DatabaseWrapper.getWrapper().deleteData(ContactsData.CONTACTS_TABLE, ContactsData.CONTACT_ID_KEY, String.valueOf(mId));
 				showMsg(result);
-				if(result) {
+				if(result == DatabaseInfo.SUCCESS) {
 					finish();
 				}
 			}
 		} else {
 			Intent intent = new Intent(getApplicationContext(),
 					EditContactsActivity.class);
-			intent.putExtra(DatabaseInfo.CONTACT_ID_KEY, mId);
+			intent.putExtra(ContactsData.CONTACT_ID_KEY, mId);
 			startActivity(intent);
 		}
 		return true;
@@ -72,12 +73,12 @@ public class ContactsDetailActivity extends Activity {
 	
 	public void setContact() {
 		if (mId != -1) {
-			String[] selection = {DatabaseInfo.CONTACT_GROUP_ID_KEY};
+			String[] selection = {ContactsData.CONTACT_GROUP_ID_KEY};
 			String[] selectionArgs = {String.valueOf(mId)};
-			Cursor cursor = DatabaseWrapper.getWrapper().selectData(DatabaseInfo.CONTACTS_TABLE, DatabaseInfo.CONTACT_COLUMN_LIST, selection, selectionArgs, null, null, null);
+			Cursor cursor = DatabaseWrapper.getWrapper().selectData(ContactsData.CONTACTS_TABLE, ContactsData.CONTACT_COLUMN_LIST, selection, selectionArgs, null, null, null);
 
 			for (int i = 0; i < mItemArray.length; i++) {
-				getData(DatabaseInfo.CONTACT_COLUMN_LIST[i + 1],
+				getData(ContactsData.CONTACT_COLUMN_LIST[i + 1],
 						mItemArray[i], cursor);
 			}
 			if (cursor != null) {
@@ -94,9 +95,9 @@ public class ContactsDetailActivity extends Activity {
 		}
 	}
 	
-	public void showMsg(boolean result){
+	public void showMsg(int result){
 		int resId = R.string.delete_successful;
-		if(result == false){
+		if(result == DatabaseInfo.FAILURE){
 			resId = R.string.delete_failed;
 		}
 		Toast.makeText(this, resId, Toast.LENGTH_SHORT).show();

@@ -62,10 +62,14 @@ public class Column {
 	}
 
 	public String getSQL() {
-		String sql = mName + " " + mType;
+		StringBuilder sql = new StringBuilder();
+		sql.append(mName);
+		sql.append(" ");
+		sql.append(mType);
 		if (mIsPrimaryKey) {
-			sql += " " + "PRIMARY KEY AUTOINCREMENT";
+			sql.append(" ");
+			sql.append("PRIMARY KEY AUTOINCREMENT");
 		}
-		return sql;
+		return sql.toString();
 	}
 }

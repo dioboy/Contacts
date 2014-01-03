@@ -1,29 +1,24 @@
 package com.hwanee.database;
 
 public class DatabaseInfo {
-	public static final String DATABASE_NAME = "database_name";
-	public static final String TABLE_NAME = "table_name";
-	public static final String DATABASE_FILE_NAME = "database";
-	public static final String CONTACTS_TABLE = "연락처";
-	public static final String GROUPS_TABLE = "그룹";
-
-	public static String CONTACT_ID_KEY = "_id";
-	public static String CONTACT_NAME_KEY = "contact_name";
-	public static String CONTACT_MOBILE_KEY = "contact_mobile";
-	public static String CONTACT_PHONE_KEY = "contact_phone";
-	public static String CONTACT_EMAIL_KEY = "contact_email";
-	public static String CONTACT_ADDRESS_KEY = "contact_address";
-	public static String CONTACT_GROUP_KEY = "contact_group";
-	public static String CONTACT_GROUP_ID_KEY = "_id";
-	public static String CONTACT_DEFAULT_GROUP_KEY = "contact_default_group";
-
 	public static String INTEGER_TYPE = "INTEGER";
 	public static String TEXT_TYPE = "TEXT";
 	public static String REAL_TYPE = "REAL";
 	public static String BLOB_TYPE = "BLOB";
-	public static String[] CONTACT_COLUMN_LIST = { CONTACT_ID_KEY,
-			CONTACT_NAME_KEY, CONTACT_GROUP_KEY, CONTACT_MOBILE_KEY,
-			CONTACT_PHONE_KEY, CONTACT_EMAIL_KEY, CONTACT_ADDRESS_KEY };
-	public static String[] GROUPS_COLUMN_LIST = { CONTACT_GROUP_ID_KEY,
-			CONTACT_GROUP_KEY };
+	
+	public static final String NAME_KEY = "name";
+	public static final String TYPE_KEY = "type";
+	public static final String PK_KEY = "pk";
+	public static final String NOT_NULL_KEY = "notnull";
+	
+	//Exception Code
+	public static int SUCCESS = 1;
+	public static int FAILURE = 2;
+	public static int DATABASE_NOT_OPEN = 3;
+	public static int TABLE_NAME_ERROR = 4;
+	public static int DATABASE_FILE_NAME_ERROR = 5;
+	public static int VALUES_ERROR = 5;
+	public static int ILLEGAL_STATE_EXCEPTION = 1000;
+	public static int SQLITEEXCEPTION = 1001;
+	public static int SQLEXCEPTION = 1002;
 }

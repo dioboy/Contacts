@@ -12,7 +12,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.hwanee.adapter.CustomCursorAdapter;
-import com.hwanee.database.DatabaseInfo;
+import com.hwanee.data.ContactsData;
 import com.hwanee.database.DatabaseWrapper;
 
 public class GroupDetailActivity extends Activity {
@@ -32,9 +32,12 @@ public class GroupDetailActivity extends Activity {
 	@Override
 	protected void onResume() {
 		if (mName != null) {
-			String[] selection = {DatabaseInfo.CONTACT_GROUP_KEY};
-			String[] selectionArgs = {mName};
-			mCursor = DatabaseWrapper.getWrapper().selectData(DatabaseInfo.CONTACTS_TABLE, DatabaseInfo.CONTACT_COLUMN_LIST, selection, selectionArgs, null, null, null);
+			String[] selection = { ContactsData.CONTACT_GROUP_KEY };
+			String[] selectionArgs = { mName };
+			mCursor = DatabaseWrapper.getWrapper().selectData(
+					ContactsData.CONTACTS_TABLE,
+					ContactsData.CONTACT_COLUMN_LIST, selection, selectionArgs,
+					null, null, null);
 		}
 
 		if (mCursor != null && mCursorAdapter != null) {
@@ -58,16 +61,18 @@ public class GroupDetailActivity extends Activity {
 		mContactsList = (ListView) findViewById(R.id.ContactsList);
 		mTitle = (TextView) findViewById(R.id.ContactsGroupTitle);
 		if (intent != null) {
-			mName = intent.getStringExtra(DatabaseInfo.CONTACT_GROUP_KEY);
+			mName = intent.getStringExtra(ContactsData.CONTACT_GROUP_KEY);
 		}
 
 		if (mName == null) {
 			finish();
 		}
 
-		String[] selection = {DatabaseInfo.CONTACT_GROUP_KEY};
-		String[] selectionArgs = {mName};
-		mCursor = DatabaseWrapper.getWrapper().selectData(DatabaseInfo.CONTACTS_TABLE, DatabaseInfo.GROUPS_COLUMN_LIST, selection, selectionArgs, null, null, null);
+		String[] selection = { ContactsData.CONTACT_GROUP_KEY };
+		String[] selectionArgs = { mName };
+		mCursor = DatabaseWrapper.getWrapper().selectData(
+				ContactsData.CONTACTS_TABLE, ContactsData.GROUPS_COLUMN_LIST,
+				selection, selectionArgs, null, null, null);
 		int count = mCursor.getCount();
 		mTitle.setText(mName + " (" + count + ")");
 
@@ -95,11 +100,10 @@ public class GroupDetailActivity extends Activity {
 				Cursor cursor = mCursorAdapter.getCursor();
 				if (cursor != null) {
 					if (cursor.moveToPosition(position)) {
-						int id = cursor
-								.getInt(cursor
-										.getColumnIndex(DatabaseInfo.CONTACT_ID_KEY));
+						int id = cursor.getInt(cursor
+								.getColumnIndex(ContactsData.CONTACT_ID_KEY));
 						if (id != -1) {
-							intent.putExtra(DatabaseInfo.CONTACT_ID_KEY, id);
+							intent.putExtra(ContactsData.CONTACT_ID_KEY, id);
 							startActivity(intent);
 						}
 					}

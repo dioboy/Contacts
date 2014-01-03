@@ -2,7 +2,6 @@ package com.hwanee.contacts;
 
 import java.util.ArrayList;
 
-import android.R.integer;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
@@ -19,6 +18,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.hwanee.data.ContactsData;
 import com.hwanee.database.DatabaseInfo;
 import com.hwanee.database.DatabaseWrapper;
 
@@ -56,22 +56,22 @@ public class EditContactsActivity extends Activity {
 
 		Intent intent = getIntent();
 		if (intent != null) {
-			mId = intent.getIntExtra(DatabaseInfo.CONTACT_ID_KEY, -1);
+			mId = intent.getIntExtra(ContactsData.CONTACT_ID_KEY, -1);
 		}
 		if (mId == -1) {
 			finish();
 		}
-		String[] selection = { DatabaseInfo.CONTACT_ID_KEY };
+		String[] selection = { ContactsData.CONTACT_ID_KEY };
 		String[] selectionArgs = { String.valueOf(mId) };
 		Cursor cursor = DatabaseWrapper.getWrapper().selectData(
-				DatabaseInfo.CONTACTS_TABLE, DatabaseInfo.CONTACT_COLUMN_LIST,
+				ContactsData.CONTACTS_TABLE, ContactsData.CONTACT_COLUMN_LIST,
 				selection, selectionArgs, null, null, null);
 
-		mName.setText(getData(DatabaseInfo.CONTACT_NAME_KEY, cursor));
-		mMobile.setText(getData(DatabaseInfo.CONTACT_MOBILE_KEY, cursor));
-		mPhone.setText(getData(DatabaseInfo.CONTACT_PHONE_KEY, cursor));
-		mEmail.setText(getData(DatabaseInfo.CONTACT_EMAIL_KEY, cursor));
-		mAddress.setText(getData(DatabaseInfo.CONTACT_ADDRESS_KEY, cursor));
+		mName.setText(getData(ContactsData.CONTACT_NAME_KEY, cursor));
+		mMobile.setText(getData(ContactsData.CONTACT_MOBILE_KEY, cursor));
+		mPhone.setText(getData(ContactsData.CONTACT_PHONE_KEY, cursor));
+		mEmail.setText(getData(ContactsData.CONTACT_EMAIL_KEY, cursor));
+		mAddress.setText(getData(ContactsData.CONTACT_ADDRESS_KEY, cursor));
 		setGroupsSpinner();
 	}
 
@@ -86,7 +86,7 @@ public class EditContactsActivity extends Activity {
 
 	private void setGroupsSpinner() {
 		Cursor groupCursor = DatabaseWrapper.getWrapper().selectAllData(
-				DatabaseInfo.GROUPS_TABLE);
+				ContactsData.GROUPS_TABLE);
 		if (groupCursor != null && groupCursor.getCount() != 0) {
 
 			for (int i = 0; i < groupCursor.getCount(); i++) {
@@ -94,7 +94,7 @@ public class EditContactsActivity extends Activity {
 					mGroupList = new ArrayList<String>();
 				}
 				mGroupList.add(groupCursor.getString(groupCursor
-						.getColumnIndex(DatabaseInfo.CONTACT_GROUP_KEY)));
+						.getColumnIndex(ContactsData.CONTACT_GROUP_KEY)));
 				if (!groupCursor.moveToNext()) {
 					break;
 				}
@@ -129,24 +129,24 @@ public class EditContactsActivity extends Activity {
 		public void onClick(View v) {
 			int id = R.string.edit_successful;
 			if (v.getId() == R.id.EditContactSave && mId != -1) {
-				String[] column = { DatabaseInfo.CONTACT_ID_KEY };
+				String[] column = { ContactsData.CONTACT_ID_KEY };
 				String[] columData = { String.valueOf(mId) };
 				ContentValues values = new ContentValues();
-				values.put(DatabaseInfo.CONTACT_NAME_KEY, mName.getText()
+				values.put(ContactsData.CONTACT_NAME_KEY, mName.getText()
 						.toString());
-				values.put(DatabaseInfo.CONTACT_GROUP_KEY, mGroup
+				values.put(ContactsData.CONTACT_GROUP_KEY, mGroup
 						.getSelectedItem().toString());
-				values.put(DatabaseInfo.CONTACT_MOBILE_KEY, mMobile.getText()
+				values.put(ContactsData.CONTACT_MOBILE_KEY, mMobile.getText()
 						.toString());
-				values.put(DatabaseInfo.CONTACT_PHONE_KEY, mPhone.getText()
+				values.put(ContactsData.CONTACT_PHONE_KEY, mPhone.getText()
 						.toString());
-				values.put(DatabaseInfo.CONTACT_EMAIL_KEY, mEmail.getText()
+				values.put(ContactsData.CONTACT_EMAIL_KEY, mEmail.getText()
 						.toString());
-				values.put(DatabaseInfo.CONTACT_ADDRESS_KEY, mAddress.getText()
+				values.put(ContactsData.CONTACT_ADDRESS_KEY, mAddress.getText()
 						.toString());
-				boolean result = DatabaseWrapper.getWrapper().updataData(
-						DatabaseInfo.CONTACTS_TABLE, column, columData, values);
-				if (result == false) {
+				int result = DatabaseWrapper.getWrapper().updataData(
+						ContactsData.CONTACTS_TABLE, column, columData, values);
+				if (result == DatabaseInfo.FAILURE) {
 					id = R.string.edit_failed;
 				}
 			}

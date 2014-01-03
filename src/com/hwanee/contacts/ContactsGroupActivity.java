@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.hwanee.adapter.GroupsCursorAdapter;
+import com.hwanee.data.ContactsData;
 import com.hwanee.database.DatabaseInfo;
 import com.hwanee.database.DatabaseWrapper;
 
@@ -35,7 +36,7 @@ public class ContactsGroupActivity extends Activity {
 
 	@Override
 	protected void onResume() {
-		mCursor = DatabaseWrapper.getWrapper().selectAllData(DatabaseInfo.GROUPS_TABLE);
+		mCursor = DatabaseWrapper.getWrapper().selectAllData(ContactsData.GROUPS_TABLE);
 		if (mCursor != null && mGroupCursorAdapter != null) {
 			mGroupCursorAdapter.changeCursor(mCursor);
 			mGroupCursorAdapter.notifyDataSetChanged();
@@ -52,7 +53,7 @@ public class ContactsGroupActivity extends Activity {
 	}
 
 	private void initActivity() {
-		mCursor = DatabaseWrapper.getWrapper().selectAllData(DatabaseInfo.GROUPS_TABLE);
+		mCursor = DatabaseWrapper.getWrapper().selectAllData(ContactsData.GROUPS_TABLE);
 		if (mCursor != null) {
 			mGroupCursorAdapter = new GroupsCursorAdapter(this, mCursor);
 		}
@@ -85,9 +86,9 @@ public class ContactsGroupActivity extends Activity {
 		mDeleteDialog.show();
 	}
 
-	private void showMsg(boolean result) {
+	private void showMsg(int result) {
 		int msg = R.string.delete_failed;
-		if (result) {
+		if (result == DatabaseInfo.SUCCESS) {
 			msg = R.string.delete_successful;
 		}
 		Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
@@ -101,14 +102,14 @@ public class ContactsGroupActivity extends Activity {
 
 		@Override
 		public void onClick(DialogInterface dialog, int which) {
-			boolean result = false;
+			int result = DatabaseInfo.FAILURE;
 			if (mDeleteGroupId > 0) {
-				String[] selection = {DatabaseInfo.GROUPS_TABLE};
+				String[] selection = {ContactsData.GROUPS_TABLE};
 				String[] selectionArgs = {String.valueOf(mDeleteGroupId)};
-				Cursor cursor = DatabaseWrapper.getWrapper().selectData(DatabaseInfo.GROUPS_TABLE, DatabaseInfo.GROUPS_COLUMN_LIST, selection, selectionArgs, null, null, null);
-				String name = cursor.getString(cursor.getColumnIndex(DatabaseInfo.CONTACT_GROUP_KEY));
-				result = DatabaseWrapper.getWrapper().deleteData(DatabaseInfo.GROUPS_TABLE, DatabaseInfo.CONTACT_GROUP_ID_KEY, String.valueOf(mDeleteGroupId));
-				if(result || name != null) {
+				Cursor cursor = DatabaseWrapper.getWrapper().selectData(ContactsData.GROUPS_TABLE, ContactsData.GROUPS_COLUMN_LIST, selection, selectionArgs, null, null, null);
+				String name = cursor.getString(cursor.getColumnIndex(ContactsData.CONTACT_GROUP_KEY));
+				result = DatabaseWrapper.getWrapper().deleteData(ContactsData.GROUPS_TABLE, ContactsData.CONTACT_GROUP_ID_KEY, String.valueOf(mDeleteGroupId));
+				if(result == DatabaseInfo.SUCCESS || name != null) {
 //					ContactsDataBase.updateContactsAfterDeleteGroup(getBaseContext(), name);
 				}
 				mDeleteGroupId = -1;
@@ -136,11 +137,11 @@ public class ContactsGroupActivity extends Activity {
 				int position, long arg3) {
 			if (mCursor != null) {
 				if (mCursor.moveToPosition(position)) {
-					int isDelete = mCursor.getInt(mCursor.getColumnIndex(DatabaseInfo.CONTACT_DEFAULT_GROUP_KEY));
+					int isDelete = mCursor.getInt(mCursor.getColumnIndex(ContactsData.CONTACT_DEFAULT_GROUP_KEY));
 					if (isDelete == 0) {
 						return false;
 					}
-					mDeleteGroupId = mCursor.getInt(mCursor.getColumnIndex(DatabaseInfo.CONTACT_GROUP_ID_KEY));
+					mDeleteGroupId = mCursor.getInt(mCursor.getColumnIndex(ContactsData.CONTACT_GROUP_ID_KEY));
 					if (mDeleteGroupId > 0) {
 						createDeleteDialog();
 						return true;
@@ -165,9 +166,9 @@ public class ContactsGroupActivity extends Activity {
 						
 						String name = cursor
 								.getString(cursor
-										.getColumnIndex(DatabaseInfo.CONTACT_GROUP_KEY));
+										.getColumnIndex(ContactsData.CONTACT_GROUP_KEY));
 						if (name != null) {
-							intent.putExtra(DatabaseInfo.CONTACT_GROUP_KEY,
+							intent.putExtra(ContactsData.CONTACT_GROUP_KEY,
 									name);
 							startActivity(intent);
 						}

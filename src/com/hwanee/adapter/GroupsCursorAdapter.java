@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.hwanee.contacts.R;
-import com.hwanee.database.DatabaseInfo;
+import com.hwanee.data.ContactsData;
 import com.hwanee.database.DatabaseWrapper;
 
 public class GroupsCursorAdapter extends CursorAdapter {
@@ -26,14 +26,14 @@ public class GroupsCursorAdapter extends CursorAdapter {
 				.findViewById(R.id.GroupsListItemCount);
 
 		String name = cursor.getString(cursor
-				.getColumnIndex(DatabaseInfo.CONTACT_GROUP_KEY));
+				.getColumnIndex(ContactsData.CONTACT_GROUP_KEY));
 		if (nameTv != null && name != null) {
 			nameTv.setText(name);
 		}
-		String[] selection = { DatabaseInfo.CONTACT_GROUP_KEY };
+		String[] selection = { ContactsData.CONTACT_GROUP_KEY };
 		String[] selectionArgs = { name };
 		Cursor gCursor = DatabaseWrapper.getWrapper().selectData(
-				DatabaseInfo.CONTACTS_TABLE, DatabaseInfo.CONTACT_COLUMN_LIST,
+				ContactsData.CONTACTS_TABLE, ContactsData.CONTACT_COLUMN_LIST,
 				selection, selectionArgs, null, null, null);
 		if (gCursor != null) {
 			count = gCursor.getCount();
