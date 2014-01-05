@@ -80,16 +80,16 @@ public class DatabaseWrapper {
 		return DatabaseInfo.FAILURE;
 	}
 
-	public int creatTable(String tableName, ArrayList<Column> values){
+	public int creatTable(String tableName, ArrayList<Column> values) {
 		if (mDB == null) {
 			return DatabaseInfo.DATABASE_NOT_OPEN;
 		}
-		
-		if(tableName == null) {
+
+		if (tableName == null) {
 			return DatabaseInfo.TABLE_NAME_ERROR;
 		}
-		
-		if(values == null || values.size() == 0) {
+
+		if (values == null || values.size() == 0) {
 			return DatabaseInfo.VALUES_ERROR;
 		}
 		StringBuilder sql = new StringBuilder();
@@ -123,7 +123,8 @@ public class DatabaseWrapper {
 		}
 
 		do {
-			String name = cursor.getString(cursor.getColumnIndex("name"));
+			String name = cursor.getString(cursor
+					.getColumnIndex(DatabaseInfo.NAME_KEY));
 			if (name.equals(table)) {
 				if (cursor != null) {
 					cursor.close();
@@ -217,7 +218,8 @@ public class DatabaseWrapper {
 			return null;
 		}
 		while (cursor.moveToNext()) {
-			columns.add(cursor.getString(cursor.getColumnIndex(DatabaseInfo.NAME_KEY)));
+			columns.add(cursor.getString(cursor
+					.getColumnIndex(DatabaseInfo.NAME_KEY)));
 		}
 		cursor.close();
 
@@ -237,14 +239,14 @@ public class DatabaseWrapper {
 	}
 
 	public int addColumn(String tableName, String name, String type) {
-		if (mDB == null){
+		if (mDB == null) {
 			return DatabaseInfo.DATABASE_NOT_OPEN;
 		}
-			
-		if(tableName == null){
-			return DatabaseInfo.TABLE_NAME_ERROR;			
+
+		if (tableName == null) {
+			return DatabaseInfo.TABLE_NAME_ERROR;
 		}
-		if(name == null && type == null) {
+		if (name == null && type == null) {
 			return DatabaseInfo.VALUES_ERROR;
 		}
 		String sql = ALTER_TABLE_ADD_COLUMN
@@ -349,10 +351,10 @@ public class DatabaseWrapper {
 
 		return result;
 	}
-	
+
 	/*
-	 * 다수의 데이터 저장용이며 해당 함수는 내부적으로 Transaction이 구현되어 잇지 않으므로 
-	 * 호출 전에 beginTransaction을 해주고 끝나면 setTransactionSuccessful과 endTransaction을 호출할것 
+	 * 다수의 데이터 저장용이며 해당 함수는 내부적으로 Transaction이 구현되어 잇지 않으므로 호출 전에
+	 * beginTransaction을 해주고 끝나면 setTransactionSuccessful과 endTransaction을 호출할것
 	 */
 	public int insertData(String tableName, ContentValues[] values) {
 		if (mDB == null) {
@@ -417,7 +419,11 @@ public class DatabaseWrapper {
 			return DatabaseInfo.VALUES_ERROR;
 		}
 		try {
-			if (mDB.delete(tableName, column + "=" + columData, null) <= 0) {
+			StringBuilder whereClause = new StringBuilder();
+			whereClause.append(column);
+			whereClause.append("=");
+			whereClause.append(columData);
+			if (mDB.delete(tableName, whereClause.toString(), null) <= 0) {
 				return DatabaseInfo.FAILURE;
 			}
 		} catch (SQLException e) {

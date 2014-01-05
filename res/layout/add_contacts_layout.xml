@@ -166,6 +166,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/contacts_default_margine"
                     android:hint="@string/mobile"
+                    android:inputType="phone"
                     android:singleLine="true"
                     android:textSize="@dimen/contacts_list_item_name_fontsize" />
             </LinearLayout>
@@ -210,6 +211,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/contacts_default_margine"
                     android:hint="@string/phone"
+                    android:inputType="phone"
                     android:singleLine="true"
                     android:textSize="@dimen/contacts_list_item_name_fontsize" />
             </LinearLayout>
@@ -254,6 +256,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/contacts_default_margine"
                     android:hint="@string/email"
+                    android:inputType="textEmailAddress"
                     android:singleLine="true"
                     android:textSize="@dimen/contacts_list_item_name_fontsize" />
             </LinearLayout>
