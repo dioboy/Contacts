@@ -51,10 +51,14 @@ public class ConfigureActivity extends Activity {
 			}
 			if (mSQLInput != null) {
 				String sql = mSQLInput.getText().toString();
+				if(sql == null || sql.length() <=0) {
+					return;
+				}
 				Cursor cursor = DBWrapper.getIstance().selectData(sql);
 				if (cursor == null) {
 					Toast.makeText(getBaseContext(), R.string.error,
 							Toast.LENGTH_SHORT).show();
+					return;
 				}
 				do {
 					String[] result = new String[cursor.getColumnCount()];
