@@ -10,8 +10,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hwanee.data.ContactsData;
-import com.hwanee.database.DatabaseInfo;
-import com.hwanee.database.DatabaseWrapper;
+import com.hwanee.data.DBWrapper;
+import com.representative.database.DatabaseInfo;
 
 public class ContactsDetailActivity extends Activity {
 	private int mId = -1;
@@ -56,7 +56,7 @@ public class ContactsDetailActivity extends Activity {
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
 		if (item.getItemId() == R.id.menu_item_delete) {
 			if(mId != -1) {
-				int result = DatabaseWrapper.getWrapper().deleteData(ContactsData.CONTACTS_TABLE, ContactsData.CONTACT_ID_KEY, String.valueOf(mId));
+				int result = DBWrapper.getIstance().deleteData(ContactsData.CONTACTS_TABLE, ContactsData.CONTACT_ID_KEY, String.valueOf(mId));
 				showMsg(result);
 				if(result == DatabaseInfo.SUCCESS) {
 					finish();
@@ -75,7 +75,7 @@ public class ContactsDetailActivity extends Activity {
 		if (mId != -1) {
 			String[] selection = {ContactsData.CONTACT_GROUP_ID_KEY};
 			String[] selectionArgs = {String.valueOf(mId)};
-			Cursor cursor = DatabaseWrapper.getWrapper().selectData(ContactsData.CONTACTS_TABLE, ContactsData.CONTACT_COLUMN_LIST, selection, selectionArgs, null, null, null);
+			Cursor cursor = DBWrapper.getIstance().selectData(ContactsData.CONTACTS_TABLE, ContactsData.CONTACT_COLUMN_LIST, selection, selectionArgs, null, null, null);
 
 			for (int i = 0; i < mItemArray.length; i++) {
 				getData(ContactsData.CONTACT_COLUMN_LIST[i + 1],

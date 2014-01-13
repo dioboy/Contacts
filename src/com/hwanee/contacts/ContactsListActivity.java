@@ -17,7 +17,7 @@ import android.widget.ListView;
 
 import com.hwanee.adapter.CustomCursorAdapter;
 import com.hwanee.data.ContactsData;
-import com.hwanee.database.DatabaseWrapper;
+import com.hwanee.data.DBWrapper;
 
 public class ContactsListActivity extends Activity {
 	private CustomCursorAdapter mCursorAdapter = null;
@@ -34,7 +34,7 @@ public class ContactsListActivity extends Activity {
 
 	@Override
 	protected void onResume() {
-		mCursor = DatabaseWrapper.getWrapper().selectAllData(ContactsData.CONTACTS_TABLE);
+		mCursor = DBWrapper.getIstance().selectAllData(ContactsData.CONTACTS_TABLE);
 		
 		if (mCursor != null && mCursorAdapter != null) {
 			mCursorAdapter.changeCursor(mCursor);
@@ -53,7 +53,7 @@ public class ContactsListActivity extends Activity {
 	}
 
 	private void initActivity() {
-		mCursor = DatabaseWrapper.getWrapper().selectAllData(ContactsData.CONTACTS_TABLE);
+		mCursor = DBWrapper.getIstance().selectAllData(ContactsData.CONTACTS_TABLE);
 		mListView = (ListView) findViewById(R.id.ContactsList);
 		mSearchInput = (EditText) findViewById(R.id.SearchInput);
 		mSearchInput.addTextChangedListener(mSearchTextWatcher);

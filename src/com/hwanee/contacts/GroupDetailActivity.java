@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.hwanee.adapter.CustomCursorAdapter;
 import com.hwanee.data.ContactsData;
-import com.hwanee.database.DatabaseWrapper;
+import com.hwanee.data.DBWrapper;
 
 public class GroupDetailActivity extends Activity {
 	private String mName = null;
@@ -34,7 +34,7 @@ public class GroupDetailActivity extends Activity {
 		if (mName != null) {
 			String[] selection = { ContactsData.CONTACT_GROUP_KEY };
 			String[] selectionArgs = { mName };
-			mCursor = DatabaseWrapper.getWrapper().selectData(
+			mCursor = DBWrapper.getIstance().selectData(
 					ContactsData.CONTACTS_TABLE,
 					ContactsData.CONTACT_COLUMN_LIST, selection, selectionArgs,
 					null, null, null);
@@ -70,7 +70,7 @@ public class GroupDetailActivity extends Activity {
 
 		String[] selection = { ContactsData.CONTACT_GROUP_KEY };
 		String[] selectionArgs = { mName };
-		mCursor = DatabaseWrapper.getWrapper().selectData(
+		mCursor = DBWrapper.getIstance().selectData(
 				ContactsData.CONTACTS_TABLE, ContactsData.GROUPS_COLUMN_LIST,
 				selection, selectionArgs, null, null, null);
 		int count = mCursor.getCount();

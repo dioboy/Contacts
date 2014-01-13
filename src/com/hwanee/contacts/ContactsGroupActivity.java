@@ -17,8 +17,8 @@ import android.widget.Toast;
 
 import com.hwanee.adapter.GroupsCursorAdapter;
 import com.hwanee.data.ContactsData;
-import com.hwanee.database.DatabaseInfo;
-import com.hwanee.database.DatabaseWrapper;
+import com.hwanee.data.DBWrapper;
+import com.representative.database.DatabaseInfo;
 
 public class ContactsGroupActivity extends Activity {
 	private ListView mGroupsList;
@@ -36,7 +36,7 @@ public class ContactsGroupActivity extends Activity {
 
 	@Override
 	protected void onResume() {
-		mCursor = DatabaseWrapper.getWrapper().selectAllData(ContactsData.GROUPS_TABLE);
+		mCursor = DBWrapper.getIstance().selectAllData(ContactsData.GROUPS_TABLE);
 		if (mCursor != null && mGroupCursorAdapter != null) {
 			mGroupCursorAdapter.changeCursor(mCursor);
 			mGroupCursorAdapter.notifyDataSetChanged();
@@ -53,7 +53,7 @@ public class ContactsGroupActivity extends Activity {
 	}
 
 	private void initActivity() {
-		mCursor = DatabaseWrapper.getWrapper().selectAllData(ContactsData.GROUPS_TABLE);
+		mCursor = DBWrapper.getIstance().selectAllData(ContactsData.GROUPS_TABLE);
 		if (mCursor != null) {
 			mGroupCursorAdapter = new GroupsCursorAdapter(this, mCursor);
 		}
@@ -106,9 +106,9 @@ public class ContactsGroupActivity extends Activity {
 			if (mDeleteGroupId > 0) {
 				String[] selection = {ContactsData.GROUPS_TABLE};
 				String[] selectionArgs = {String.valueOf(mDeleteGroupId)};
-				Cursor cursor = DatabaseWrapper.getWrapper().selectData(ContactsData.GROUPS_TABLE, ContactsData.GROUPS_COLUMN_LIST, selection, selectionArgs, null, null, null);
+				Cursor cursor = DBWrapper.getIstance().selectData(ContactsData.GROUPS_TABLE, ContactsData.GROUPS_COLUMN_LIST, selection, selectionArgs, null, null, null);
 				String name = cursor.getString(cursor.getColumnIndex(ContactsData.CONTACT_GROUP_KEY));
-				result = DatabaseWrapper.getWrapper().deleteData(ContactsData.GROUPS_TABLE, ContactsData.CONTACT_GROUP_ID_KEY, String.valueOf(mDeleteGroupId));
+				result = DBWrapper.getIstance().deleteData(ContactsData.GROUPS_TABLE, ContactsData.CONTACT_GROUP_ID_KEY, String.valueOf(mDeleteGroupId));
 				if(result == DatabaseInfo.SUCCESS || name != null) {
 //					ContactsDataBase.updateContactsAfterDeleteGroup(getBaseContext(), name);
 				}

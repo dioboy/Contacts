@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.hwanee.contacts.R;
 import com.hwanee.data.ContactsData;
-import com.hwanee.database.DatabaseWrapper;
+import com.hwanee.data.DBWrapper;
 
 public class GroupsCursorAdapter extends CursorAdapter {
 
@@ -32,7 +32,7 @@ public class GroupsCursorAdapter extends CursorAdapter {
 		}
 		String[] selection = { ContactsData.CONTACT_GROUP_KEY };
 		String[] selectionArgs = { name };
-		Cursor gCursor = DatabaseWrapper.getWrapper().selectData(
+		Cursor gCursor = DBWrapper.getIstance().selectData(
 				ContactsData.CONTACTS_TABLE, ContactsData.CONTACT_COLUMN_LIST,
 				selection, selectionArgs, null, null, null);
 		if (gCursor != null) {

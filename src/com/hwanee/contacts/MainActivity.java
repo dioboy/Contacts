@@ -8,6 +8,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,10 +22,10 @@ import android.widget.TabHost.TabSpec;
 import android.widget.Toast;
 
 import com.hwanee.data.ContactsData;
+import com.hwanee.data.DBWrapper;
 import com.hwanee.data.DefaultData;
-import com.hwanee.database.Column;
-import com.hwanee.database.DatabaseInfo;
-import com.hwanee.database.DatabaseWrapper;
+import com.representative.database.Column;
+import com.representative.database.DatabaseInfo;
 
 public class MainActivity extends TabActivity {
 	private Dialog mDialog = null;
@@ -119,7 +120,7 @@ public class MainActivity extends TabActivity {
 				ContentValues values = new ContentValues();
 				values.put(ContactsData.CONTACT_GROUP_KEY, groupName);
 				values.put(ContactsData.CONTACT_DEFAULT_GROUP_KEY, 1);
-				result = DatabaseWrapper.getWrapper().insertData(
+				result = DBWrapper.getIstance().insertData(
 						ContactsData.GROUPS_TABLE, values);
 			}
 			showMsg(result);
@@ -141,15 +142,17 @@ public class MainActivity extends TabActivity {
 	};
 
 	private void initDatabase() {
-		int result = DatabaseWrapper.getWrapper().openOrCreateDB(this,
+		String path = Environment.getExternalStorageDirectory().getPath();
+		DBWrapper.getIstance().setDBPath(path);
+		int result = DBWrapper.getIstance().openOrCreateDB(this,
 				ContactsData.DATABASE_FILE_NAME);
 		if (result == DatabaseInfo.SUCCESS) {
-			Cursor cursor = DatabaseWrapper.getWrapper().getTableList();
+			Cursor cursor = DBWrapper.getIstance().getTableList();
 			if (cursor == null || cursor.getCount() > 2) {
 				initColumnArrayList();
-				DatabaseWrapper.getWrapper().creatTable(
+				DBWrapper.getIstance().creatTable(
 						ContactsData.CONTACTS_TABLE, mContactsColumn);
-				DatabaseWrapper.getWrapper().creatTable(
+				DBWrapper.getIstance().creatTable(
 						ContactsData.GROUPS_TABLE, mGroupsColumn);
 				DefaultData.setDefaultGroups();
 				DefaultData.setDefaultContacts();

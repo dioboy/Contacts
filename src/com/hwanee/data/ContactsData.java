@@ -3,7 +3,7 @@ package com.hwanee.data;
 public class ContactsData {
 	public static final String DATABASE_NAME = "database_name";
 	public static final String TABLE_NAME = "table_name";
-	public static final String DATABASE_FILE_NAME = "database";
+	public static final String DATABASE_FILE_NAME = "database.db";
 	public static final String CONTACTS_TABLE = "연락처";
 	public static final String GROUPS_TABLE = "그룹";
 

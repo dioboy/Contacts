@@ -1,4 +1,4 @@
-package com.hwanee.database;
+package com.representative.database;
 
 public class Column {
 	private String mName = null;

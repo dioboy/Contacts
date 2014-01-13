@@ -19,8 +19,8 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.hwanee.data.ContactsData;
-import com.hwanee.database.DatabaseInfo;
-import com.hwanee.database.DatabaseWrapper;
+import com.hwanee.data.DBWrapper;
+import com.representative.database.DatabaseInfo;
 
 public class EditContactsActivity extends Activity {
 	private EditText mName;
@@ -63,7 +63,7 @@ public class EditContactsActivity extends Activity {
 		}
 		String[] selection = { ContactsData.CONTACT_ID_KEY };
 		String[] selectionArgs = { String.valueOf(mId) };
-		Cursor cursor = DatabaseWrapper.getWrapper().selectData(
+		Cursor cursor = DBWrapper.getIstance().selectData(
 				ContactsData.CONTACTS_TABLE, ContactsData.CONTACT_COLUMN_LIST,
 				selection, selectionArgs, null, null, null);
 
@@ -85,7 +85,7 @@ public class EditContactsActivity extends Activity {
 	}
 
 	private void setGroupsSpinner() {
-		Cursor groupCursor = DatabaseWrapper.getWrapper().selectAllData(
+		Cursor groupCursor = DBWrapper.getIstance().selectAllData(
 				ContactsData.GROUPS_TABLE);
 		if (groupCursor != null && groupCursor.getCount() != 0) {
 
@@ -144,8 +144,8 @@ public class EditContactsActivity extends Activity {
 						.toString());
 				values.put(ContactsData.CONTACT_ADDRESS_KEY, mAddress.getText()
 						.toString());
-				int result = DatabaseWrapper.getWrapper().updataData(
-						ContactsData.CONTACTS_TABLE, column, columData, values);
+				int result = DBWrapper.getIstance().updataData(
+						ContactsData.CONTACTS_TABLE, column, columData, values, null);
 				if (result == DatabaseInfo.FAILURE) {
 					id = R.string.edit_failed;
 				}

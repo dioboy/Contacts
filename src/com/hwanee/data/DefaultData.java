@@ -1,10 +1,8 @@
 package com.hwanee.data;
 
 import android.content.ContentValues;
-import android.content.Context;
 
-import com.hwanee.database.DatabaseInfo;
-import com.hwanee.database.DatabaseWrapper;
+import com.representative.database.DatabaseInfo;
 
 public class DefaultData {
 	public static int[] mDefaultGroup = { 0, 1, 1, 1 };
@@ -28,24 +26,24 @@ public class DefaultData {
 
 	public static void setDefaultGroups() {
 		ContentValues[] values = new ContentValues[mGroupName.length];
-		if (DatabaseWrapper.getWrapper().beginTransaction() == DatabaseInfo.SUCCESS) {
+		if (DBWrapper.getIstance().beginTransaction() == DatabaseInfo.SUCCESS) {
 			for (int i = 0; i < mGroupName.length; i++) {
 				values[i] = new ContentValues();
 				values[i].put(ContactsData.CONTACT_GROUP_KEY, mGroupName[i]);
 				values[i].put(ContactsData.CONTACT_DEFAULT_GROUP_KEY,
 						mDefaultGroup[i]);
 			}
-			if (DatabaseWrapper.getWrapper().insertData(
+			if (DBWrapper.getIstance().insertData(
 					ContactsData.GROUPS_TABLE, values) == DatabaseInfo.SUCCESS) {
-				DatabaseWrapper.getWrapper().setTransactionSuccessful();
+				DBWrapper.getIstance().setTransactionSuccessful();
 			}
 		}
-		DatabaseWrapper.getWrapper().endTransaction();
+		DBWrapper.getIstance().endTransaction();
 	}
 
 	public static void setDefaultContacts() {
 		ContentValues[] values = new ContentValues[mName.length];
-		if (DatabaseWrapper.getWrapper().beginTransaction() == DatabaseInfo.SUCCESS) {
+		if (DBWrapper.getIstance().beginTransaction() == DatabaseInfo.SUCCESS) {
 			for (int i = 0; i < mName.length; i++) {
 				values[i] = new ContentValues();
 				values[i].put(ContactsData.CONTACT_NAME_KEY, mName[i]);
@@ -56,11 +54,11 @@ public class DefaultData {
 				values[i].put(ContactsData.CONTACT_ADDRESS_KEY, mAddress[i]);
 			}
 
-			if (DatabaseWrapper.getWrapper().insertData(
+			if (DBWrapper.getIstance().insertData(
 					ContactsData.CONTACTS_TABLE, values) == DatabaseInfo.SUCCESS) {
-				DatabaseWrapper.getWrapper().setTransactionSuccessful();
+				DBWrapper.getIstance().setTransactionSuccessful();
 			}
 		}
-		DatabaseWrapper.getWrapper().endTransaction();
+		DBWrapper.getIstance().endTransaction();
 	}
 }

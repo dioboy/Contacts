@@ -19,8 +19,8 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.hwanee.data.ContactsData;
-import com.hwanee.database.DatabaseInfo;
-import com.hwanee.database.DatabaseWrapper;
+import com.hwanee.data.DBWrapper;
+import com.representative.database.DatabaseInfo;
 
 public class AddContactsActivity extends Activity {
 	private EditText mName;
@@ -71,7 +71,7 @@ public class AddContactsActivity extends Activity {
 	}
 
 	private void setGroupsSpinner() {
-		Cursor groupCursor = DatabaseWrapper.getWrapper().selectAllData(ContactsData.GROUPS_TABLE);
+		Cursor groupCursor = DBWrapper.getIstance().selectAllData(ContactsData.GROUPS_TABLE);
 		if (groupCursor != null && groupCursor.getCount() != 0) {
 			for (int i = 0; i < groupCursor.getCount(); i++) {
 				if (mGroupList == null) {
@@ -112,7 +112,7 @@ public class AddContactsActivity extends Activity {
 				values.put(ContactsData.CONTACT_PHONE_KEY, mPhone.getText().toString());
 				values.put(ContactsData.CONTACT_EMAIL_KEY, mEmail.getText().toString());
 				values.put(ContactsData.CONTACT_ADDRESS_KEY, mAddress.getText().toString());
-				int result = DatabaseWrapper.getWrapper().insertData(ContactsData.CONTACTS_TABLE, values);
+				int result = DBWrapper.getIstance().insertData(ContactsData.CONTACTS_TABLE, values);
 				if(result == DatabaseInfo.FAILURE) {
 					resId = R.string.save_failed;
 				}
