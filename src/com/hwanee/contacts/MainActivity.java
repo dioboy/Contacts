@@ -73,12 +73,12 @@ public class MainActivity extends TabActivity {
 					AddContactsActivity.class);
 			startActivity(intent);
 		} else if (item.getItemId() == R.id.menu_item_add_group) {
-			createAddDialog();
+			createGroupDialog();
 		}
 		return super.onMenuItemSelected(featureId, item);
 	}
 
-	private Dialog createAddDialog() {
+	private void createGroupDialog() {
 		if (mDialog != null) {
 			mDialog.dismiss();
 			mInputGroupName = null;
@@ -103,7 +103,7 @@ public class MainActivity extends TabActivity {
 			mCancelBtn.setOnClickListener(mCancelClickListener);
 		}
 
-		return mDialog;
+		mDialog.show();;
 	}
 
 	OnClickListener mSaveClickListener = new OnClickListener() {
@@ -122,6 +122,9 @@ public class MainActivity extends TabActivity {
 				values.put(ContactsData.CONTACT_DEFAULT_GROUP_KEY, 1);
 				result = DBWrapper.getIstance().insertData(
 						ContactsData.GROUPS_TABLE, values);
+				if(result == DatabaseInfo.SUCCESS){
+					//TODO:추구 그룹 추가 후 리스트 갱신되도록 소스 추가해야
+				}
 			}
 			showMsg(result);
 			if (mDialog != null) {
@@ -145,15 +148,15 @@ public class MainActivity extends TabActivity {
 		String path = Environment.getExternalStorageDirectory().getPath();
 		DBWrapper.getIstance().setDBPath(path);
 		int result = DBWrapper.getIstance().openOrCreateDB(this,
-				ContactsData.DATABASE_FILE_NAME);
+				ContactsData.DATABASE_FILE_NAME, DatabaseInfo.USE_CUSTOM_PATH);
 		if (result == DatabaseInfo.SUCCESS) {
 			Cursor cursor = DBWrapper.getIstance().getTableList();
 			if (cursor == null || cursor.getCount() > 2) {
 				initColumnArrayList();
-				DBWrapper.getIstance().creatTable(
-						ContactsData.CONTACTS_TABLE, mContactsColumn);
-				DBWrapper.getIstance().creatTable(
-						ContactsData.GROUPS_TABLE, mGroupsColumn);
+				DBWrapper.getIstance().creatTable(ContactsData.CONTACTS_TABLE,
+						mContactsColumn);
+				DBWrapper.getIstance().creatTable(ContactsData.GROUPS_TABLE,
+						mGroupsColumn);
 				DefaultData.setDefaultGroups();
 				DefaultData.setDefaultContacts();
 			}

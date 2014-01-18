@@ -24,7 +24,12 @@ public class DatabaseInfo {
 	public static int ERR_VALUES = 6;
 	public static int ERR_DB_PATH = 7;
 	public static int ERR_DOUBLE_PK = 8;
+	public static int ERR_WHERE_STR = 9;
 	public static int ILLEGAL_STATE_EXCEPTION = 1000;
 	public static int SQLITEEXCEPTION = 1001;
 	public static int SQLEXCEPTION = 1002;
+	
+	//DB PATH FLAG
+	public static int USE_APPDATA_PATH = 0;
+	public static int USE_CUSTOM_PATH = 1;
 }

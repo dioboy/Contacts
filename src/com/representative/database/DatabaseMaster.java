@@ -43,27 +43,26 @@ public abstract class DatabaseMaster {
 	}
 
 	public String getDBPath() {
-		if (mDBPath == null) {
-
-		}
-
 		return mDBPath;
 	}
 
-	public int openOrCreateDB(Context context, String name) {
+	public int openOrCreateDB(Context context, String name, int pathState) {
 		if (name == null) {
 			return DatabaseInfo.ERR_DB_FILE_NAME;
 		}
 		try {
-			if (mDBPath == null) {
-				mDB = context.openOrCreateDatabase(name,
-						Context.MODE_WORLD_WRITEABLE, null);
-			} else {
+
+			if (pathState == DatabaseInfo.USE_CUSTOM_PATH) {
+				if (mDBPath == null) {
+					return DatabaseInfo.ERR_DB_PATH;
+				}
 				String dbPath = mDBPath + "/" + name;
 				mDB = context.openOrCreateDatabase(dbPath,
 						Context.MODE_WORLD_WRITEABLE, null);
+			} else {
+				mDB = context.openOrCreateDatabase(name,
+						Context.MODE_WORLD_WRITEABLE, null);
 			}
-			checkedLevelTable();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return DatabaseInfo.SQLEXCEPTION;
@@ -678,33 +677,6 @@ public abstract class DatabaseMaster {
 	}
 
 	protected abstract int onUpdate(String sql);
-
-	private void checkedLevelTable() {
-		if (mDB != null) {
-			return;
-		}
-		Cursor cursor = null;
-		try {
-			cursor = mDB.rawQuery(SELECT_ALL_TABLE, null);
-
-			if (cursor != null) {
-				if (existsTable(DatabaseInfo.INFO_TABLE)) {
-					return;
-				}
-			}
-			ArrayList<Column> lvColumn = new ArrayList<Column>();
-			lvColumn.add(new Column(DatabaseInfo.INFO_ID,
-					DatabaseInfo.INTEGER_TYPE, true));
-			lvColumn.add(new Column(DatabaseInfo.INFO_LEVEL,
-					DatabaseInfo.INTEGER_TYPE, false));
-			creatTable(DatabaseInfo.INFO_TABLE, lvColumn);
-			ContentValues value = new ContentValues();
-			value.put(DatabaseInfo.INFO_LEVEL, "1");
-			insertData(DatabaseInfo.INFO_TABLE, value);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
 
 	public static boolean converIntToBoolean(int value) {
 		return (value == 0) ? false : true;
