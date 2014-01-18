@@ -1,7 +1,9 @@
 package com.hwanee.data;
 
 public class ContactsData {
-	public static final String DATABASE_NAME = "database_name";
+	public static final String DATABASE_FOLDER = "/contacts";
+	
+	public static final String DATABASE_NAME = "/database_name";
 	public static final String TABLE_NAME = "table_name";
 	public static final String DATABASE_FILE_NAME = "database.db";
 	public static final String CONTACTS_TABLE = "ฟฌถ๔รณ";

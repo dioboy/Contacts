@@ -56,7 +56,7 @@ public abstract class DatabaseMaster {
 				if (mDBPath == null) {
 					return DatabaseInfo.ERR_DB_PATH;
 				}
-				String dbPath = mDBPath + "/" + name;
+				String dbPath = mDBPath + name;
 				mDB = context.openOrCreateDatabase(dbPath,
 						Context.MODE_WORLD_WRITEABLE, null);
 			} else {
@@ -122,8 +122,7 @@ public abstract class DatabaseMaster {
 				}
 			}
 		}
-		sql.append(TextUtils.join(", ", column));
-		sql.append(");");
+		sql.append(TextUtils.join(", ", column)).append(");");
 		try {
 			mDB.execSQL(sql.toString());
 		} catch (SQLException e) {
@@ -322,9 +321,8 @@ public abstract class DatabaseMaster {
 		}
 
 		StringBuilder createTable = new StringBuilder();
-		createTable.append(CREATE_TABLE.replace(TABLE_NAME_PLACE, tableName));
-		createTable.append(TextUtils.join(", ", updatedValues));
-		createTable.append(")");
+		createTable.append(CREATE_TABLE.replace(TABLE_NAME_PLACE, tableName))
+				.append(TextUtils.join(", ", updatedValues)).append(")");
 		try {
 			mDB.execSQL(createTable.toString());
 		} catch (SQLException e) {
@@ -457,9 +455,7 @@ public abstract class DatabaseMaster {
 		}
 		try {
 			StringBuilder whereClause = new StringBuilder();
-			whereClause.append(column);
-			whereClause.append("=");
-			whereClause.append(columData);
+			whereClause.append(column).append("=").append(columData);
 			if (mDB.delete(tableName, whereClause.toString(), null) <= 0) {
 				return DatabaseInfo.FAILURE;
 			}
@@ -573,21 +569,14 @@ public abstract class DatabaseMaster {
 	private String convertArrToWhere(String[] column, String[] values,
 			boolean[] isAnd) {
 		if (column == null || column.length == 0 || values == null
-				|| values.length == 0) {
+				|| values.length == 0 || column.length != values.length) {
 			return null;
 		}
 		StringBuilder whereClause = new StringBuilder();
 		int count = column.length;
-		;
-
-		if (count != values.length && count > values.length) {
-			count = values.length;
-		}
 
 		for (int i = 0; i < count; i++) {
-			whereClause.append(column[i]);
-			whereClause.append("=");
-			whereClause.append(values[i]);
+			whereClause.append(column[i]).append("=").append(values[i]);
 			if (i < count - 1 && isAnd != null) {
 				if (isAnd[i] == true) {
 					whereClause.append(AND_STRING);
@@ -608,8 +597,7 @@ public abstract class DatabaseMaster {
 		int count = selection.length;
 
 		for (int i = 0; i < count; i++) {
-			whereClause.append(selection[i]);
-			whereClause.append("= ?");
+			whereClause.append(selection[i]).append("= ?");
 			if (i < count - 1) {
 				whereClause.append(" AND ");
 			}
@@ -642,14 +630,13 @@ public abstract class DatabaseMaster {
 		return cursor.getCount();
 	}
 
-	public int updateDB(int lv, String sql) {
+	public int updateDB(int newVersion, String sql) {
 		if (mDB == null) {
 			return DatabaseInfo.ERR_DB_NOT_OPEN;
 		}
 
 		Cursor cursor = null;
-		int oldLv = -1;
-
+		int oldVersion = mDB.getVersion();
 		try {
 			cursor = mDB.rawQuery(SELECT_ALL_SQL.replace(TABLE_NAME_PLACE,
 					DatabaseInfo.INFO_TABLE), null);
@@ -660,9 +647,9 @@ public abstract class DatabaseMaster {
 			if (!cursor.moveToFirst()) {
 				return DatabaseInfo.FAILURE;
 			}
-			oldLv = cursor.getInt(cursor
+			oldVersion = cursor.getInt(cursor
 					.getColumnIndex(DatabaseInfo.INFO_LEVEL));
-			if (oldLv < lv) {
+			if (oldVersion < newVersion) {
 				onUpdate(sql);
 			}
 		} catch (SQLException e) {

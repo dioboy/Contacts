@@ -145,7 +145,7 @@ public class MainActivity extends TabActivity {
 	};
 
 	private void initDatabase() {
-		String path = Environment.getExternalStorageDirectory().getPath();
+		String path = Environment.getExternalStorageDirectory().getPath()+ContactsData.DATABASE_FOLDER;
 		DBWrapper.getIstance().setDBPath(path);
 		int result = DBWrapper.getIstance().openOrCreateDB(this,
 				ContactsData.DATABASE_FILE_NAME, DatabaseInfo.USE_CUSTOM_PATH);

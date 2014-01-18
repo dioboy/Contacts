@@ -24,7 +24,7 @@ public class DatabaseInfo {
 	public static int ERR_VALUES = 6;
 	public static int ERR_DB_PATH = 7;
 	public static int ERR_DOUBLE_PK = 8;
-	public static int ERR_WHERE_STR = 9;
+	public static int ERR_WHERE_CLAUSE = 9;
 	public static int ILLEGAL_STATE_EXCEPTION = 1000;
 	public static int SQLITEEXCEPTION = 1001;
 	public static int SQLEXCEPTION = 1002;
