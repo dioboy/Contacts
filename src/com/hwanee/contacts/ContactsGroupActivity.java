@@ -104,13 +104,14 @@ public class ContactsGroupActivity extends Activity {
 		public void onClick(DialogInterface dialog, int which) {
 			int result = DatabaseInfo.FAILURE;
 			if (mDeleteGroupId > 0) {
-				String[] selection = {ContactsData.GROUPS_TABLE};
+				String[] selection = {ContactsData.CONTACT_GROUP_ID_KEY};
 				String[] selectionArgs = {String.valueOf(mDeleteGroupId)};
 				Cursor cursor = DBWrapper.getIstance().selectData(ContactsData.GROUPS_TABLE, ContactsData.GROUPS_COLUMN_LIST, selection, selectionArgs, null, null, null);
 				String name = cursor.getString(cursor.getColumnIndex(ContactsData.CONTACT_GROUP_KEY));
 				result = DBWrapper.getIstance().deleteData(ContactsData.GROUPS_TABLE, ContactsData.CONTACT_GROUP_ID_KEY, String.valueOf(mDeleteGroupId));
 				if(result == DatabaseInfo.SUCCESS || name != null) {
 //					ContactsDataBase.updateContactsAfterDeleteGroup(getBaseContext(), name);
+					mGroupCursorAdapter.notifyDataSetChanged();
 				}
 				mDeleteGroupId = -1;
 			}
