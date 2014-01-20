@@ -9,9 +9,9 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.delegate.database.DatabaseInfo;
 import com.hwanee.data.ContactsData;
 import com.hwanee.data.DBWrapper;
-import com.representative.database.DatabaseInfo;
 
 public class ContactsDetailActivity extends Activity {
 	private int mId = -1;

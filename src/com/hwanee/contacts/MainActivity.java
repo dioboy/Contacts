@@ -21,11 +21,11 @@ import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 import android.widget.Toast;
 
+import com.delegate.database.Column;
+import com.delegate.database.DatabaseInfo;
 import com.hwanee.data.ContactsData;
 import com.hwanee.data.DBWrapper;
 import com.hwanee.data.DefaultData;
-import com.representative.database.Column;
-import com.representative.database.DatabaseInfo;
 
 public class MainActivity extends TabActivity {
 	private Dialog mDialog = null;
@@ -123,7 +123,7 @@ public class MainActivity extends TabActivity {
 				result = DBWrapper.getIstance().insertData(
 						ContactsData.GROUPS_TABLE, values);
 				if(result == DatabaseInfo.SUCCESS){
-					//TODO:추구 그룹 추가 후 리스트 갱신되도록 소스 추가해야
+					//TODO:추 그룹 추가 후 리스트 갱신되도록 소스 추가해야
 				}
 			}
 			showMsg(result);
@@ -169,25 +169,25 @@ public class MainActivity extends TabActivity {
 
 	private void initColumnArrayList() {
 		mContactsColumn.add(new Column(ContactsData.CONTACT_ID_KEY,
-				DatabaseInfo.INTEGER_TYPE, true));
+				DatabaseInfo.INTEGER_TYPE, DatabaseInfo.PRIMARY_KEY));
 		mContactsColumn.add(new Column(ContactsData.CONTACT_NAME_KEY,
-				DatabaseInfo.TEXT_TYPE, false));
+				DatabaseInfo.TEXT_TYPE, DatabaseInfo.NOT_PRIMARY_KEY));
 		mContactsColumn.add(new Column(ContactsData.CONTACT_GROUP_KEY,
-				DatabaseInfo.TEXT_TYPE, false));
+				DatabaseInfo.TEXT_TYPE, DatabaseInfo.NOT_PRIMARY_KEY));
 		mContactsColumn.add(new Column(ContactsData.CONTACT_MOBILE_KEY,
-				DatabaseInfo.TEXT_TYPE, false));
+				DatabaseInfo.TEXT_TYPE, DatabaseInfo.NOT_PRIMARY_KEY));
 		mContactsColumn.add(new Column(ContactsData.CONTACT_PHONE_KEY,
-				DatabaseInfo.TEXT_TYPE, false));
+				DatabaseInfo.TEXT_TYPE, DatabaseInfo.NOT_PRIMARY_KEY));
 		mContactsColumn.add(new Column(ContactsData.CONTACT_EMAIL_KEY,
-				DatabaseInfo.TEXT_TYPE, false));
+				DatabaseInfo.TEXT_TYPE, DatabaseInfo.NOT_PRIMARY_KEY));
 		mContactsColumn.add(new Column(ContactsData.CONTACT_ADDRESS_KEY,
-				DatabaseInfo.TEXT_TYPE, false));
+				DatabaseInfo.TEXT_TYPE, DatabaseInfo.NOT_PRIMARY_KEY));
 		mGroupsColumn.add(new Column(ContactsData.CONTACT_GROUP_ID_KEY,
-				DatabaseInfo.INTEGER_TYPE, true));
+				DatabaseInfo.INTEGER_TYPE, DatabaseInfo.NOT_PRIMARY_KEY));
 		mGroupsColumn.add(new Column(ContactsData.CONTACT_GROUP_KEY,
-				DatabaseInfo.TEXT_TYPE, false));
+				DatabaseInfo.TEXT_TYPE, DatabaseInfo.NOT_PRIMARY_KEY));
 		mGroupsColumn.add(new Column(ContactsData.CONTACT_DEFAULT_GROUP_KEY,
-				DatabaseInfo.INTEGER_TYPE, false));
+				DatabaseInfo.INTEGER_TYPE, DatabaseInfo.NOT_PRIMARY_KEY));
 	}
 
 	private void showMsg(int result) {

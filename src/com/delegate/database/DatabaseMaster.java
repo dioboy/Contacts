@@ -1,9 +1,12 @@
-package com.representative.database;
+package com.delegate.database;
 
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import com.hwanee.data.ContactsData;
+import com.hwanee.data.DBWrapper;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -63,6 +66,9 @@ public abstract class DatabaseMaster {
 				mDB = context.openOrCreateDatabase(name,
 						Context.MODE_WORLD_WRITEABLE, null);
 			}
+			if(mDB != null) {
+				setDBVersion(ContactsData.DEFAULT_DB_VER);
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return DatabaseInfo.SQLEXCEPTION;
@@ -70,6 +76,33 @@ public abstract class DatabaseMaster {
 		if (mDB == null) {
 			return DatabaseInfo.FAILURE;
 		}
+		return DatabaseInfo.SUCCESS;
+	}
+
+	public int getDBVersion() {
+		if (mDB == null) {
+			return DatabaseInfo.ERR_DB_NOT_OPEN;
+		}
+		int result = -1;
+		try {
+			result = mDB.getVersion();
+		} catch (SQLException e) {
+			return DatabaseInfo.SQLEXCEPTION;
+		}
+
+		return result;
+	}
+
+	public int setDBVersion(int ver) {
+		if (mDB == null) {
+			return DatabaseInfo.ERR_DB_NOT_OPEN;
+		}
+		try {
+			mDB.setVersion(ver);
+		} catch (SQLException e) {
+			return DatabaseInfo.SQLEXCEPTION;
+		}
+
 		return DatabaseInfo.SUCCESS;
 	}
 
@@ -110,11 +143,11 @@ public abstract class DatabaseMaster {
 		for (int i = 0; i < values.size(); i++) {
 			Column value = values.get(i);
 			if (value != null) {
-				if (value.isPrimaryKey()) {
+				if (value.isPrimaryKey() == DatabaseInfo.PRIMARY_KEY) {
 					if (existsPK) {
-						return DatabaseInfo.ERR_DOUBLE_PK;
+						continue;
 					}
-					existsPK = value.isPrimaryKey();
+					existsPK = true;
 				}
 				String tmp = value.getSQL();
 				if (tmp != null) {
@@ -214,12 +247,9 @@ public abstract class DatabaseMaster {
 					.getColumnIndex(DatabaseInfo.NAME_KEY));
 			String column_type = cursor.getString(cursor
 					.getColumnIndex(DatabaseInfo.TYPE_KEY));
-			boolean column_pk = converIntToBoolean(cursor.getInt(cursor
-					.getColumnIndex(DatabaseInfo.PK_KEY)));
-			boolean column_notnull = converIntToBoolean(cursor.getInt(cursor
-					.getColumnIndex(DatabaseInfo.NOT_NULL_KEY)));
-			list.add(new Column(column_name, column_type, column_pk,
-					column_notnull));
+			int column_pk = cursor.getInt(cursor
+					.getColumnIndex(DatabaseInfo.PK_KEY));
+			list.add(new Column(column_name, column_type, column_pk));
 		} while (cursor.moveToNext());
 
 		cursor.close();
@@ -427,7 +457,7 @@ public abstract class DatabaseMaster {
 			return DatabaseInfo.ERR_VALUES;
 		}
 
-		String where = convertArrToWhere(column, columData, isAnd);
+		String where = makeWhereString(column, columData, isAnd);
 		if (where == null) {
 			return DatabaseInfo.FAILURE;
 		}
@@ -477,9 +507,9 @@ public abstract class DatabaseMaster {
 		if (columData == null || columData == null) {
 			return DatabaseInfo.ERR_VALUES;
 		}
-		String where = convertArrToWhere(column, columData, isAnd);
+		String where = makeWhereString(column, columData, isAnd);
 		if (where == null) {
-			return DatabaseInfo.FAILURE;
+			return DatabaseInfo.ERR_WHERE_CLAUSE;
 		}
 		try {
 			if (mDB.delete(tableName, where, null) <= 0) {
@@ -499,7 +529,7 @@ public abstract class DatabaseMaster {
 		if (mDB == null) {
 			return null;
 		}
-		String select = convertArrToSelection(selection);
+		String select = makeSelectionString(selection);
 		Cursor cursor = null;
 		try {
 			cursor = mDB.query(tableName, columns, select, selectionArgs,
@@ -566,7 +596,7 @@ public abstract class DatabaseMaster {
 		return cursor;
 	}
 
-	private String convertArrToWhere(String[] column, String[] values,
+	private String makeWhereString(String[] column, String[] values,
 			boolean[] isAnd) {
 		if (column == null || column.length == 0 || values == null
 				|| values.length == 0 || column.length != values.length) {
@@ -589,7 +619,7 @@ public abstract class DatabaseMaster {
 		return whereClause.toString();
 	}
 
-	private String convertArrToSelection(String[] selection) {
+	private String makeSelectionString(String[] selection) {
 		if (selection == null || selection.length == 0) {
 			return null;
 		}
@@ -630,44 +660,25 @@ public abstract class DatabaseMaster {
 		return cursor.getCount();
 	}
 
-	public int updateDB(int newVersion, String sql) {
+	public int DBUpgrade(Context context, int newVersion) {
+		int result = DatabaseInfo.FAILURE;
 		if (mDB == null) {
 			return DatabaseInfo.ERR_DB_NOT_OPEN;
 		}
 
-		Cursor cursor = null;
-		int oldVersion = mDB.getVersion();
 		try {
-			cursor = mDB.rawQuery(SELECT_ALL_SQL.replace(TABLE_NAME_PLACE,
-					DatabaseInfo.INFO_TABLE), null);
-			if (cursor == null) {
-				return DatabaseInfo.FAILURE;
-			}
-
-			if (!cursor.moveToFirst()) {
-				return DatabaseInfo.FAILURE;
-			}
-			oldVersion = cursor.getInt(cursor
-					.getColumnIndex(DatabaseInfo.INFO_LEVEL));
+			int oldVersion = mDB.getVersion();
 			if (oldVersion < newVersion) {
-				onUpdate(sql);
+				result = onUpdate(context);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return DatabaseInfo.SQLEXCEPTION;
-		} finally {
-			if (cursor != null) {
-				cursor.close();
-			}
+			result = DatabaseInfo.SQLEXCEPTION;
 		}
-		return DatabaseInfo.SUCCESS;
+		return result;
 	}
 
-	protected abstract int onUpdate(String sql);
-
-	public static boolean converIntToBoolean(int value) {
-		return (value == 0) ? false : true;
-	}
+	protected abstract int onUpdate(Context context);
 
 	public String[] getDBFileList(Context context) {
 		String path = getDBPath(context);

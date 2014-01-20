@@ -2,7 +2,7 @@ package com.hwanee.data;
 
 import android.content.ContentValues;
 
-import com.representative.database.DatabaseInfo;
+import com.delegate.database.DatabaseInfo;
 
 public class DefaultData {
 	public static int[] mDefaultGroup = { 0, 1, 1, 1 };

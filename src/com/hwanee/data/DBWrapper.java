@@ -1,8 +1,8 @@
 package com.hwanee.data;
 
-import android.database.sqlite.SQLiteDatabase;
+import android.content.Context;
 
-import com.representative.database.DatabaseMaster;
+import com.delegate.database.DatabaseMaster;
 
 public class DBWrapper extends DatabaseMaster {
 
@@ -16,7 +16,7 @@ public class DBWrapper extends DatabaseMaster {
 	}
 
 	@Override
-	protected int onUpdate(String sql) {
+	protected int onUpdate(Context context) {
 		// TODO Auto-generated method stub
 		return 0;
 	}

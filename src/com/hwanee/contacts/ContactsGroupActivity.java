@@ -15,10 +15,10 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.delegate.database.DatabaseInfo;
 import com.hwanee.adapter.GroupsCursorAdapter;
 import com.hwanee.data.ContactsData;
 import com.hwanee.data.DBWrapper;
-import com.representative.database.DatabaseInfo;
 
 public class ContactsGroupActivity extends Activity {
 	private ListView mGroupsList;

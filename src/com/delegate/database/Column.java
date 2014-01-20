@@ -1,11 +1,10 @@
-package com.representative.database;
+package com.delegate.database;
 
 public class Column {
 	private String mName = null;
 	private String mType = null;
-	private boolean mIsPrimaryKey = false;
-	private boolean mIsNotNull = false;
-
+	private int mIsPrimaryKey = DatabaseInfo.NOT_PRIMARY_KEY;
+	
 	public Column() {
 
 	}
@@ -13,22 +12,15 @@ public class Column {
 	public Column(String name, String attr) {
 		mName = name;
 		mType = attr;
-		mIsPrimaryKey = false;
+		mIsPrimaryKey = DatabaseInfo.NOT_PRIMARY_KEY;
 	}
 
-	public Column(String name, String attr, boolean pk) {
+	public Column(String name, String attr, int pk) {
 		mName = name;
 		mType = attr;
 		mIsPrimaryKey = pk;
 	}
-
-	public Column(String name, String attr, boolean pk, boolean notnull) {
-		mName = name;
-		mType = attr;
-		mIsPrimaryKey = pk;
-		mIsNotNull = notnull;
-	}
-
+	
 	public String getName() {
 		return mName;
 	}
@@ -37,12 +29,8 @@ public class Column {
 		return mType;
 	}
 
-	public boolean isPrimaryKey() {
+	public int isPrimaryKey() {
 		return mIsPrimaryKey;
-	}
-
-	public boolean isNotNull() {
-		return mIsNotNull;
 	}
 
 	public void setName(String name) {
@@ -53,20 +41,15 @@ public class Column {
 		mType = attr;
 	}
 
-	public void setPrimaryKey(boolean value) {
+	public void setPrimaryKey(int value) {
 		mIsPrimaryKey = value;
 	}
-
-	public void setNotNull(boolean value) {
-		mIsNotNull = value;
-	}
-
 	public String getSQL() {
 		StringBuilder sql = new StringBuilder();
 		sql.append(mName);
 		sql.append(" ");
 		sql.append(mType);
-		if (mIsPrimaryKey) {
+		if (mIsPrimaryKey == DatabaseInfo.PRIMARY_KEY) {
 			sql.append(" ");
 			sql.append("PRIMARY KEY AUTOINCREMENT");
 		}

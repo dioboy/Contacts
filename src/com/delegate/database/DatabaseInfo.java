@@ -1,4 +1,4 @@
-package com.representative.database;
+package com.delegate.database;
 
 public class DatabaseInfo {
 	public static String INTEGER_TYPE = "INTEGER";
@@ -14,20 +14,24 @@ public class DatabaseInfo {
 	public static final String INFO_TABLE = "info";
 	public static final String INFO_ID = "_id";
 	public static final String INFO_LEVEL = "level";
+	
+	//PrimaryKey
+	public static int NOT_PRIMARY_KEY = 0;
+	public static int PRIMARY_KEY = 1;
 
 	// Exception Code
-	public static int SUCCESS = 1;
-	public static int FAILURE = 2;
-	public static int ERR_DB_NOT_OPEN = 3;
-	public static int ERR_TABLE_NAME = 4;
-	public static int ERR_DB_FILE_NAME = 5;
-	public static int ERR_VALUES = 6;
-	public static int ERR_DB_PATH = 7;
-	public static int ERR_DOUBLE_PK = 8;
-	public static int ERR_WHERE_CLAUSE = 9;
-	public static int ILLEGAL_STATE_EXCEPTION = 1000;
-	public static int SQLITEEXCEPTION = 1001;
-	public static int SQLEXCEPTION = 1002;
+	public static int SUCCESS = 1001;
+	public static int FAILURE = 1002;
+	public static int ERR_DB_NOT_OPEN = 1003;
+	public static int ERR_TABLE_NAME = 1004;
+	public static int ERR_DB_FILE_NAME = 1005;
+	public static int ERR_VALUES = 1006;
+	public static int ERR_DB_PATH = 1007;
+	public static int ERR_DOUBLE_PK = 1008;
+	public static int ERR_WHERE_CLAUSE = 1009;
+	public static int ILLEGAL_STATE_EXCEPTION = 2000;
+	public static int SQLITEEXCEPTION = 2001;
+	public static int SQLEXCEPTION = 2002;
 	
 	//DB PATH FLAG
 	public static int USE_APPDATA_PATH = 0;
