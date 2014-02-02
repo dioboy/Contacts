@@ -38,6 +38,8 @@ public abstract class DatabaseMaster {
 			+ COLUMNS_PLACE + " FROM " + TABLE_NAME_PLACE + "_old";
 	private static final String AND_STRING = " AND ";
 	private static final String OR_STRING = " OR ";
+	private static final String SQL_COMMA = "\", \"";
+	private static final String SQL_END = ");";
 	private SQLiteDatabase mDB;
 	private String mDBPath = null;
 
@@ -155,7 +157,7 @@ public abstract class DatabaseMaster {
 				}
 			}
 		}
-		sql.append(TextUtils.join(", ", column)).append(");");
+		sql.append(TextUtils.join(SQL_COMMA, column)).append(SQL_END);
 		try {
 			mDB.execSQL(sql.toString());
 		} catch (SQLException e) {
@@ -333,7 +335,7 @@ public abstract class DatabaseMaster {
 		ArrayList<String> updatedValues = new ArrayList<String>();
 		ArrayList<Column> oldTableColumns = getColumnType(tableName);
 		updatedTableColumns.removeAll(Arrays.asList(colsToRmove));
-		String columnsSeperated = TextUtils.join(",", updatedTableColumns);
+		String columnsSeperated = TextUtils.join(SQL_COMMA, updatedTableColumns);
 		try {
 			mDB.execSQL(ALTER_TABLE_RENAME.replace(TABLE_NAME_PLACE, tableName)
 					+ tableName + "_old;");
@@ -352,7 +354,7 @@ public abstract class DatabaseMaster {
 
 		StringBuilder createTable = new StringBuilder();
 		createTable.append(CREATE_TABLE.replace(TABLE_NAME_PLACE, tableName))
-				.append(TextUtils.join(", ", updatedValues)).append(")");
+				.append(TextUtils.join(SQL_COMMA, updatedValues)).append(")");
 		try {
 			mDB.execSQL(createTable.toString());
 		} catch (SQLException e) {
@@ -690,6 +692,21 @@ public abstract class DatabaseMaster {
 		}
 
 		return null;
+	}
+
+	public int close() {
+		if (mDB != null) {
+			try {
+				mDB.close();
+				mDB = null;
+			} catch (SQLException e) {
+				return DatabaseInfo.SQLEXCEPTION;
+			}
+		} else {
+			return DatabaseInfo.ERR_DB_NOT_OPEN;
+		}
+
+		return DatabaseInfo.SUCCESS;
 	}
 
 	public String getDBPath(Context context) {

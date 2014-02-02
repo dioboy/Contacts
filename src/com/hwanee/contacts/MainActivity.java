@@ -203,6 +203,7 @@ public class MainActivity extends TabActivity {
 		if (mDialog != null && mDialog.isShowing()) {
 			mDialog.dismiss();
 		}
+		DBWrapper.getIstance().close();
 		super.onDestroy();
 	}
 }
